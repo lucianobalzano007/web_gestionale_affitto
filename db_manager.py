@@ -70,15 +70,7 @@ def preleva_contratti():
     except Exception as e:
         return 1
     else:
-        dati=[]
-        for element in lista:
-            i=0
-            contratto=()
-            for elemento in element.values():
-                el=(elemento,)
-                contratto=contratto+el
-            dati.append(contratto)
-        return dati
+        return lista
 
 def eliminazione_contratto(codice):
     '''

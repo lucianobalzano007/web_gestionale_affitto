@@ -93,6 +93,17 @@ def registra_contratto():
         return render_template('new_contratto.html',utente=utente)
     return redirect('login')
 
+@app.route('/view_contratti')
+def view_contratti():
+    if 'email' in session:
+        utente=User.get_user_by_email(session['email'])
+        contratti=contratto.Contratto.get_lista_contratti(db_manager.preleva_contratti())
+        if contratti==[]:
+            flash('400: non sono presenti contratti', 'error')
+            return render_template('view_contratti.html', utente=utente, contratti=contratti)
+        else:
+            return render_template('view_contratti.html', utente=utente, contratti=contratti)
+    return redirect(url_for('login'))
 
 @app.route('/login', methods=['POST','GET'])
 def login():

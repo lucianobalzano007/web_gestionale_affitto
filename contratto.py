@@ -66,3 +66,10 @@ class Contratto():
         }
         result=db.update_contratto(codice,contratto)
         return result
+    
+    def get_lista_contratti(mongo_lista):
+        lista_contratti=[]
+        for contratto in mongo_lista:
+            element=Contratto(contratto['tipo_abi'], contratto['ind_abi'], contratto['city_abi'], contratto['prov_abi'], contratto['note_abi'], contratto['ag_contr'], contratto['datarec_contr'], contratto['datasti_contr'], contratto['cod_contr'], contratto['durata_contr'], contratto['nome_loc'], contratto['cog_loc'], contratto['cf_loc'], contratto['nome_cond'], contratto['cog_cond'], contratto['cf_cond'])
+            lista_contratti.append(element)
+        return lista_contratti
