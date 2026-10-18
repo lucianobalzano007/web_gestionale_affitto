@@ -17,4 +17,5 @@ COPY crypto.py /app
 COPY application.py /app
 COPY templates /app/templates
 COPY db_manager.py /app
+
 CMD [ "python","application.py"]

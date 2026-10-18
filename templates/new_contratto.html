@@ -8,6 +8,9 @@
         <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons.ico') }}">
         <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://jquery.com">
+        <script src="https://jquery.com"></script>
+        <script src="https://jquery.com"></script>
     </head>
     <body data-bs-theme="dark">
         <nav class="navbar navbar-expand-lg" style="background-color: #4d8203;" data-bs-theme="dark">
@@ -24,7 +27,7 @@
                     <a class="nav-link" aria-current="page" href="/home">Home</a>
                     </li>
                     <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Gestione Contratti
                     </a>
                     <ul class="dropdown-menu">
@@ -58,74 +61,109 @@
             </div>
         </nav>
         <div class="container-xxl bd-gutter my-md-4 text-center">
-            <h1>Ciao, {{utente.name|e}}</h1>
+            <h1>Creazione del nuovo contratto</h1>
+            <hr>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category == "error" %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ message }} 
+                        </div>
+                        {% endif %}
+                        {% if category == "success" %}
+                        <div class="alert alert-success" role="alert">
+                            {{ message }} 
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
             <div class="container text-start">
-                <h2>Gestione Contratti</h2>
+                <form method="POST" action="/registra_contratto">
+                <h2>Dati di locazione</h2>
                 <hr>
-                <div class="row row-cols-md-4">
-                    <div class="col">
-                        <div class="card" style="width: 18rem; background-color: #4d8203;">
-                            <div class="card-body">
-                                <h5 class="card-title">Crea Contratto</h5>
-                                <p class="card-text">Crea il contratto d'affitto di una casa</p>
-                                <a href="#" class="btn btn-light">Vai al servizio</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card" style="width: 18rem; background-color: #4d8203;">
-                            <div class="card-body">
-                                <h5 class="card-title">Visualizza Contratti</h5>
-                                <p class="card-text">Visualizza, modifica ed elimina i dati dei contratti</p>
-                                <a href="#" class="btn btn-light">Vai al servizio</a>
-                            </div>
-                        </div>
-                    </div>
+                <div class="mb-3">
+                    <label for="tipo_abi" class="form-label">Tipologia d'abitazione</label>
+                    <input type="text" class="form-control" id="tibo_abi" name="tipo_abi" required>
                 </div>
-                <h2 class="my-md-4">Creazioni Ricevute</h2>
+                <div class="mb-3">
+                    <label for="ind_abi" class="form-label">Indirizzo d'abitazione</label>
+                    <input type="text" class="form-control" id="ind_abi" name="ind_abi" required>
+                </div>
+                <div class="mb-3">
+                    <label for="city_abi" class="form-label">Città d'abitazione</label>
+                    <input type="text" class="form-control" id="city_abi" name="city_abi" required>
+                </div>
+                <div class="mb-3">
+                    <label for="prov_abi" class="form-label">Provincia d'abitazione</label>
+                    <input type="text" class="form-control" id="prov_abi" name="prov_abi" required>
+                </div>
+                <div class="mb-3">
+                    <label for="note_abi" class="form-label">Note</label>
+                    <input type="text" class="form-control" id="note_abi" name="note_abi">
+                </div>
+                <h2>Dati contratto</h2>
                 <hr>
-                <div class="row row-cols-md-4">
-                    <div class="col">
-                        <div class="card" style="width: 18rem; background-color: #4d8203;">
-                            <div class="card-body">
-                                <h5 class="card-title">Crea ricevuta</h5>
-                                <p class="card-text">Crea una nuova ricevuta per un determinato contratto</p>
-                                <a href="#" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#newProjectModal">Vai al servizio</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card" style="width: 18rem; background-color: #4d8203;">
-                            <div class="card-body">
-                                <h5 class="card-title">Visualizza ricevute</h5>
-                                <p class="card-text">Visualizza, modifica ed elimina le ricevute per un determinato contratto</p>
-                                <a href="#" class="btn btn-light">Vai al servizio</a>
-                            </div>
-                        </div>
-                    </div>
+                <div class="mb-3">
+                    <label for="ag_contr" class="form-label">Nome agenzia</label>
+                    <input type="text" class="form-control" id="ag_contr" name="ag_contr" required>
                 </div>
+                <div class="mb-3">
+                    <label for="datarec_contr" class="form-label">Data di registrazione</label>
+                    <input type="date" class="form-control" id="data-italiana" name="datarec_contr" required>
+                </div>
+                <div class="mb-3">
+                    <label for="datasti_contr" class="form-label">Data di stipula</label>
+                    <input type="date" class="form-control" id="data-italiana" name="datasti_contr" required>
+                </div>
+                <div class="mb-3">
+                    <label for="cod_contr" class="form-label">Codice contratto</label>
+                    <input type="text" class="form-control" id="cod_contr" name="cod_contr" required>
+                </div>
+                <div class="mb-3">
+                    <label for="durata_contr" class="form-label">Durata contratto</label>
+                    <input type="text" class="form-control" id="durata_contr" name="durata_contr" required>
+                </div>
+                <h2>Dati locatore</h2>
+                <hr>
+                <div class="mb-3">
+                    <label for="nome_loc" class="form-label">Nome locatore</label>
+                    <input type="text" class="form-control" id="nome_loc" name="nome_loc" required>
+                </div>
+                <div class="mb-3">
+                    <label for="cog_loc" class="form-label">Cognome locatore</label>
+                    <input type="text" class="form-control" id="cog_loc" name="cog_loc" required>
+                </div>
+                <div class="mb-3">
+                    <label for="cf_loc" class="form-label">Codice fiscale locatore</label>
+                    <input type="text" class="form-control" id="cf_loc" name="cf_loc" size="16" required>
+                </div>
+                <h2>Dati conduttore</h2>
+                <hr>
+                <div class="mb-3">
+                    <label for="nome_cond" class="form-label">Nome conduttore</label>
+                    <input type="text" class="form-control" id="nome_cond" name="nome_cond" required>
+                </div>
+                <div class="mb-3">
+                    <label for="cog_cond" class="form-label">Cognome conduttore</label>
+                    <input type="text" class="form-control" id="cog_cond" name="cog_cond" required>
+                </div>
+                <div class="mb-3">
+                    <label for="cf_cond" class="form-label">Codice fiscale conduttore</label>
+                    <input type="text" class="form-control" id="cf_cond" name="cf_cond" size="16" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Registra</button>
+            </form>
             </div>
         </div>
-        <div class="modal fade" id="newProjectModal" tabindex="-1" aria-labelledby="newProjectLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Crea un nuovo progetto</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form method="POST" action="/crea_nuovo_progetto">
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <input type="text" class="form-control" id="nome_progetto" name="nome_progetto" required placeholder="Nome Progetto">
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-light">Crea Progetto</button>
-                        </div>               
-                    </form>
-                </div>
-            </div>
-        </div>
+        <script>
+        $(function() {
+            $("#data-italiana").datepicker({
+                dateFormat: 'dd/mm/yyyy'
+            });
+        });
+    </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     </body>
 </html>

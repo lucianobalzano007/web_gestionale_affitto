@@ -2,6 +2,7 @@ from pymongo import MongoClient
 import pymongo
 from pymongo import collection
 from os import getenv
+from datetime import datetime
 
 key_contr=['_id','tipo_abi','ind_abi','city_abi','prov_abi','note_abi','ag_contr','datarec_contr','datasti_contr','cod_contr','durata_contr','nome_loc','cog_loc','cf_loc','nome_cond','cog_cond','cf_cond']
 key_ric=['_id','codice_id','num_ric','data_ric','datain_ric','dataout_ric','cas1imp_ric','cas2_ric','cas2imp_ric','cas3_ric','cas3imp_ric','cas4_ric','cas4imp_ric','cas5_ric','cas5imp_ric','iva_ric','totale_senza_iva','iva','totale_iva','pagato']
@@ -324,3 +325,13 @@ def conta_utenti():
     collection_user=db['utente']
     result=collection_user.count_documents({})
     return result
+
+def cambia_data_formato(data):
+    '''
+        precondizione: data stringa
+        post_condizione: ritorna la data nel formato dd/mm/yyyy
+    '''
+    dt_obj = datetime.strptime(data, "%Y-%m-%d")
+    # Poi formattarla nel nuovo formato dd/mm/yyyy
+    data_formattata = dt_obj.strftime("%d/%m/%Y")
+    return data_formattata

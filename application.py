@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, g, flash
 from user import User
+import contratto
 import db_manager
 from os import getenv
 import os
@@ -42,6 +43,56 @@ def register_admin():
     elif db_manager.conta_utenti()!=0:
         return redirect(url_for('login'))
     return render_template('register_admin.html')
+
+@app.route('/registra_contratto', methods=['POST','GET'])
+def registra_contratto():
+    if 'email' in session:
+        utente=User.get_user_by_email(session['email'])
+        if request.method == 'POST':
+            tipo_abi=request.form['tipo_abi']
+            ind_abi=request.form['ind_abi']
+            city_abi=request.form['city_abi']
+            prov_abi=request.form['prov_abi']
+            note_abi=request.form['note_abi']
+            ag_contr=request.form['ag_contr']
+            datarec_contr=request.form['datarec_contr']
+            datasti_contr=request.form['datasti_contr']
+            cod_contr=request.form['cod_contr']
+            durata_contr=request.form['durata_contr']
+            nome_loc=request.form['nome_loc']
+            cog_loc=request.form['cog_loc']
+            cf_loc=request.form['cf_loc']
+            nome_cond=request.form['nome_cond']
+            cog_cond=request.form['cog_cond']
+            cf_cond=request.form['cf_cond']
+            new_contratto = contratto.Contratto(
+            tipo_abi,
+            ind_abi,
+            city_abi,
+            prov_abi,
+            note_abi,
+            ag_contr,
+            datarec_contr,
+            datasti_contr,
+            cod_contr,
+            durata_contr,
+            nome_loc,
+            cog_loc,
+            cf_loc,
+            nome_cond,
+            cog_cond,
+            cf_cond
+            )
+            result=new_contratto.crea_contratto_di_locazione()
+            if result==0:
+                flash('200: Registrazione contratto completata con successo', 'success')
+                return render_template('new_contratto.html',utente=utente)
+            else:
+                flash('400: Qualcosa non ha funzionato', 'error')
+                return render_template('new_contratto.html',utente=utente)
+        return render_template('new_contratto.html',utente=utente)
+    return redirect('login')
+
 
 @app.route('/login', methods=['POST','GET'])
 def login():

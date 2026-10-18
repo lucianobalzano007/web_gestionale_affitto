@@ -1,5 +1,4 @@
 import db_manager as db
-import tkinter as ttk
 
 class Contratto():
     def __init__(self,tipo_abi,ind_abi,city_abi,prov_abi,note_abi,ag_contr,datarec_contr,datasti_contr,cod_contr,durata_contr,nome_loc,cog_loc,cf_loc,nome_cond,cog_cond,cf_cond):
