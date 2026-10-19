@@ -71,5 +71,11 @@ class Contratto():
         lista_contratti=[]
         for contratto in mongo_lista:
             element=Contratto(contratto['tipo_abi'], contratto['ind_abi'], contratto['city_abi'], contratto['prov_abi'], contratto['note_abi'], contratto['ag_contr'], contratto['datarec_contr'], contratto['datasti_contr'], contratto['cod_contr'], contratto['durata_contr'], contratto['nome_loc'], contratto['cog_loc'], contratto['cf_loc'], contratto['nome_cond'], contratto['cog_cond'], contratto['cf_cond'])
-            lista_contratti.append(element)
+            codice=str(contratto['_id'])
+            lista_contratti.append([element,codice])
         return lista_contratti
+    
+    def get_contratto(codice):
+        contratto=db.cerca_contratto(codice)
+        element=Contratto(contratto['tipo_abi'], contratto['ind_abi'], contratto['city_abi'], contratto['prov_abi'], contratto['note_abi'], contratto['ag_contr'], contratto['datarec_contr'], contratto['datasti_contr'], contratto['cod_contr'], contratto['durata_contr'], contratto['nome_loc'], contratto['cog_loc'], contratto['cf_loc'], contratto['nome_cond'], contratto['cog_cond'], contratto['cf_cond'])
+        return element

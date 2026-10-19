@@ -99,11 +99,7 @@ def cerca_contratto(codice):
     except Exception as e:
         print(e)
     finally:
-        contratto=()
-        for elemento in result.values():
-            el=(elemento,)
-            contratto=contratto+el
-        return contratto
+        return result
 
 def update_contratto(codice,modifica):
     '''
