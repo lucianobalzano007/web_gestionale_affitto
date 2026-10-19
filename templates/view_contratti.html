@@ -16,7 +16,8 @@
                 padding: 25px;
                 border: none !important;
                 border-radius: 12px !important;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+                background-color: #4d8203;
+                box-shadow: 0 10px 30px  #223902;
                 max-width: 400px;
             }
         </style>
@@ -114,7 +115,7 @@
                     </div>
                     <!-- ID dinamico unico per ogni iterazione del ciclo -->
                     <div id="popup-{{codice}}" popover>
-                        <h4 class="text-danger mb-3">Attenzione!</h4>
+                        <h4 class="text-danger mb-3" style="color: #880505;">Attenzione!</h4>
                         <p>Questa operazione è irreversibile per l'immobile in {{contratto.ind_abi}}.</p>
                         <div class="d-flex gap-2 justify-content-end mt-4">
                             <button class="btn btn-secondary" popovertarget="popup-{{codice}}" popovertargetaction="hide">Annulla</button>

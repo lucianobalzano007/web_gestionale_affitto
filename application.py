@@ -115,12 +115,12 @@ def elimina_contratto(id_contr):
             lista_mongo=db_manager.preleva_contratti()
             contratti=contratto.Contratto.get_lista_contratti(lista_mongo)
             flash('200: contratto eliminato con successo', 'success')
-            return render_template('view_contratti.html', utente=utente, contratti=contratti)
+            return redirect(url_for('view_contratti'))
         else:
             lista_mongo=db_manager.preleva_contratti()
             contratti=contratto.Contratto.get_lista_contratti(lista_mongo)
             flash('500: eliminazione contratto non avvenuta con successo', 'success')
-            return render_template('view_contratti.html', utente=utente, contratti=contratti)
+            return redirect(url_for('view_contratti'))
     return redirect(url_for('login'))
 
 @app.route('/modifica_contratto/<id_contr>', methods=['POST', 'GET'])
