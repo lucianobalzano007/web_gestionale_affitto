@@ -4,6 +4,8 @@ import contratto
 import db_manager
 import ricevuta
 import data_manager
+import file_manager
+import json
 from os import getenv
 import os
 
@@ -211,7 +213,6 @@ def new_ricevuta(codice_id):
             pagato_ric=request.form['pagato_ric']
             iva_ric=request.form['iva_ric']
             contr=db_manager.cerca_contratto(codice_id)
-            print(contr)
             ric=ricevuta.Ricevuta(contr,codice_id,num_ric,data_ric,datain_ric,dataout_ric,cas1imp_ric,cas2_ric,cas2imp_ric,cas3_ric,cas3imp_ric,cas4_ric,cas4imp_ric,cas5_ric,cas5imp_ric,pagato_ric,iva_ric)
             buffer=ric.creazione_ricevuta()
             return send_file(buffer,mimetype='application/pdf',as_attachment=False)
@@ -219,6 +220,38 @@ def new_ricevuta(codice_id):
         return render_template('new_ricevuta.html', codice=codice_id, num_ric=num_ric, utente=utente)
     return redirect(url_for('login'))
 
+@app.route('/sel_view_ric_contratto')
+def sel_view_ric_contratto():
+    if 'email' in session:
+        utente=User.get_user_by_email(session['email'])
+        lista_mongo=db_manager.preleva_contratti()
+        contratti=contratto.Contratto.get_lista_contratti(lista_mongo)
+        if contratti==[]:
+            flash('400: non sono presenti contratti', 'error')
+            return render_template('sel_view_ric_contratto.html', utente=utente, contratti=contratti)
+        else:
+            return render_template('sel_view_ric_contratto.html', utente=utente, contratti=contratti)
+    return redirect(url_for('login'))
+
+@app.route('/view_ricevute/<codice_id>')
+def view_ricevute(codice_id):
+    if 'email' in session:
+        utente=User.get_user_by_email(session['email'])
+        contr=contratto.Contratto.get_contratto(codice_id)
+        lista_ricevute=db_manager.cerca_ricevute(codice_id)
+        lista_ric_vis=ricevuta.Ricevuta.get_lista_ricevute(contr,lista_ricevute)
+        return render_template('view_ricevute.html',lista_ric=lista_ric_vis,utente=utente,contratto=contr,codice=codice_id)
+    return redirect(url_for('login'))
+
+@app.route('/stampa_ricevuta/<codice_id>/<codice_ric>')
+def stampa_ricevuta(codice_id,codice_ric):
+    if 'email' in session:
+        utente=User.get_user_by_email(session['email'])
+        contr=db_manager.cerca_contratto(codice_id)
+        ric=db_manager.cerca_ricevuta(codice_ric)
+        buffer=file_manager.stampa_ricevuta_pdf(contr,ric)
+        return send_file(buffer,mimetype='application/pdf',as_attachment=False)
+    return redirect(url_for('login'))
 
 @app.route('/login', methods=['POST','GET'])
 def login():

@@ -147,7 +147,7 @@ def conta_ricevute(codice_id):
 def cerca_ricevute(codice_id):
     '''
         Precondizione:nessuna
-        Postcondizione:Creazione lista di tupla di ricevute di quel codice, altrimenti ritorna 1 come errore
+        Postcondizione: Ritorna una lista delle ricevute di un determinato contratto, altrimenti ritorna 1 come errore
     '''
     db=db_init()
     collection_name=db['ricevute']
@@ -156,14 +156,7 @@ def cerca_ricevute(codice_id):
     except Exception as e:
         return 1
     else:
-        dati=[]
-        for element in lista:
-            ricevuta=()
-            for elemento in element.values():
-                el=(elemento,)
-                ricevuta=ricevuta+el
-            dati.append(ricevuta)
-        return dati
+        return lista
 
 def eliminazione_ricevuta(codice_id):
     '''
@@ -190,11 +183,7 @@ def cerca_ricevuta(codice_id):
     except Exception as e:
         return 1
     finally:
-        ricevuta=()
-        for elemento in result.values():
-            el=(elemento,)
-            ricevuta=ricevuta+el
-        return ricevuta
+        return result
 
 def update_ricevuta(codice_id,ricevuta):
     '''

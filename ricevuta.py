@@ -1,6 +1,7 @@
 import db_manager as db
 from finicial import *
 from file_manager import *
+import data_manager
 import os
 
 class Ricevuta():
@@ -97,3 +98,16 @@ class Ricevuta():
         }
         result=db.update_ricevuta(id_ric,ricevuta)
         return result
+
+    def get_lista_ricevute(contratto,lista_mongo):
+        lista_ricevute=[]
+        for ric in lista_mongo:
+            element=Ricevuta(contratto,ric['codice_id'],ric['num_ric'],ric['data_ric'],ric['datain_ric'],ric['dataout_ric'],ric['cas1imp_ric'],ric['cas2_ric'],ric['cas2imp_ric'],ric['cas3_ric'],ric['cas3imp_ric'],ric['cas4_ric'],ric['cas4imp_ric'],ric['cas5_ric'],ric['cas5imp_ric'],ric['pagato'],ric['iva_ric'])
+            codice=str(ric['_id'])
+            totale_senza_iva=format(check_zero(element.cas1imp_ric)+check_zero(element.cas2imp_ric)+check_zero(element.cas3imp_ric)+check_zero(element.cas4imp_ric)+check_zero(element.cas5imp_ric),'.2f')
+            totale_iva=format(calcolo_iva_totale(check_zero(element.iva_ric),check_zero(totale_senza_iva)),'.2f')
+            anno=data_manager.estrai_anno(element.data_ric)
+            mese=data_manager.estrai_mese(element.data_ric)
+            elemento=[element,codice,totale_iva,mese,anno]
+            lista_ricevute.append(elemento)
+        return lista_ricevute

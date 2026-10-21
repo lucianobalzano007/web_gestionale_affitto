@@ -38,7 +38,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="/sel_contratto">Crea Ricevuta</a></li>
-                        <li><a class="dropdown-item" href="#">Visualizza Ricevute</a></li>
+                        <li><a class="dropdown-item" href="/sel_view_ric_contratto">Visualizza Ricevute</a></li>
                     </ul>
                     </li>
                 </ul>
@@ -145,12 +145,14 @@
                     <label for="iva_ric" class="form-label">IVA %</label>
                     <input type="number" min="0" max="100" class="form-control" id="iva_ric" name="iva_ric">
                 </div>
-                <div class="form-check" style="margin-bottom: 20px;">
-                    <input class="form-check-input" type="checkbox" value="Pagato" id="pagato_ric" name="pagato_ric">
-                    <label class="form-check-label" for="pagato_ric">
-                    Pagato
-                    </label>
+                <div class="mb-3">
+                    <label for="pagato_ric" class="form-label">Pagato</label>
+                    <select class="form-select" id="pagato_ric" name="pagato_ric" aria-label="Default select example">
+                        <option value="Si" selected>Si</option>
+                        <option value="No">No</option>
+                    </select>
                 </div>
+                
                 <button type="submit" class="btn btn-primary">Registra</button>
             </form>
             </div>

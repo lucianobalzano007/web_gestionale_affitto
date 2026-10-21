@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Selezione contratto</title>
+        <style>
+            /* LO SFONDO SCURO: Selettore corretto basato sulla classe o sull'attributo nativo */
+            [popover]:popover-open::backdrop {
+                background-color: rgba(0, 0, 0, 0.7) !important;
+                backdrop-filter: blur(5px) !important;
+            }
+
+            /* Stile della finestra interna del popup */
+            [popover] {
+                padding: 25px;
+                border: none !important;
+                border-radius: 12px !important;
+                background-color: #4d8203;
+                box-shadow: 0 10px 30px  #223902;
+                max-width: 400px;
+            }
+        </style>
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons.ico') }}">
+        <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    </head>
+    <body data-bs-theme="dark">
+        <nav class="navbar navbar-expand-lg" style="background-color: #4d8203;" data-bs-theme="dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <img src="{{ url_for('static', filename='icons.ico') }}" alt="Web Gestionale affitto" width="30" height="24">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/home">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Gestione Contratti
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/registra_contratto">Crea Contratto</a></li>
+                        <li><a class="dropdown-item" href="#">Visualizza Contratti</a></li>
+                    </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Gestione Ricevute
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/sel_contratto">Crea Ricevuta</a></li>
+                        <li><a class="dropdown-item active" href="#">Visualizza Ricevute</a></li>
+                    </ul>
+                    </li>
+                </ul>
+                <ul class="navbar-nav me-1">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{utente.email|e}}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item disabled" aria-disabled="true">Utente: Gestore</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            </div>
+        </nav>
+        <div class="container-xxl bd-gutter my-md-4 text-center">
+            <h1 style="margin-top: 20px;">Seleziona Contratto</h1>
+            <hr>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category == "error" %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ message }} 
+                        </div>
+                        {% endif %}
+                        {% if category == "success" %}
+                        <div class="alert alert-success" role="alert">
+                            {{ message }} 
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <div class="container text-start">
+                {% for contratto, codice in contratti%}
+                    <div class="row">
+                        <div class="col">
+                            <div class="card" style="background-color: #4d8203; width: 100%; margin-bottom: 10px;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{contratto.tipo_abi}}</h5>
+                                <p class="card-text">{{contratto.ind_abi}}, {{contratto.city_abi|e}} ({{contratto.prov_abi}})</p>
+                                    <div class="btn-group">
+                                        <a type="button" href="/view_ricevute/{{codice}}" class="btn btn-light" aria-expanded="false">
+                                        Seleziona
+                                        </a>
+                                    </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    </body>
+</html>
