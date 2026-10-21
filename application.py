@@ -240,7 +240,11 @@ def view_ricevute(codice_id):
         contr=contratto.Contratto.get_contratto(codice_id)
         lista_ricevute=db_manager.cerca_ricevute(codice_id)
         lista_ric_vis=ricevuta.Ricevuta.get_lista_ricevute(contr,lista_ricevute)
-        return render_template('view_ricevute.html',lista_ric=lista_ric_vis,utente=utente,contratto=contr,codice=codice_id)
+        if lista_ric_vis==[]:
+            flash('400: non sono presenti ricevute', 'error')
+            return render_template('view_ricevute.html',lista_ric=lista_ric_vis,utente=utente,contratto=contr,codice=codice_id)
+        else:
+            return render_template('view_ricevute.html',lista_ric=lista_ric_vis,utente=utente,contratto=contr,codice=codice_id)
     return redirect(url_for('login'))
 
 @app.route('/stampa_ricevuta/<codice_id>/<codice_ric>')
@@ -249,6 +253,8 @@ def stampa_ricevuta(codice_id,codice_ric):
         utente=User.get_user_by_email(session['email'])
         contr=db_manager.cerca_contratto(codice_id)
         ric=db_manager.cerca_ricevuta(codice_ric)
+        if contr==1 or ric==1:
+            return '<h1>Error 404</h1>/n<p>Page not found</p>'
         buffer=file_manager.stampa_ricevuta_pdf(contr,ric)
         return send_file(buffer,mimetype='application/pdf',as_attachment=False)
     return redirect(url_for('login'))
