@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, session, g, flash
+from flask import Flask, render_template, request, redirect, url_for, session, g, flash, send_file
 from user import User
 import contratto
 import db_manager
+import ricevuta
+import data_manager
 from os import getenv
 import os
 
@@ -174,6 +176,49 @@ def modifica_contratto(id_contr):
         contr=contratto.Contratto.get_contratto(id_contr)
         return render_template('modify_contr.html', utente=utente, contratto=contr, codice=id_contr)
     return redirect(url_for('login'))
+
+@app.route('/sel_contratto')
+def sel_contratto():
+    if 'email' in session:
+        utente=User.get_user_by_email(session['email'])
+        lista_mongo=db_manager.preleva_contratti()
+        contratti=contratto.Contratto.get_lista_contratti(lista_mongo)
+        if contratti==[]:
+            flash('400: non sono presenti contratti', 'error')
+            return render_template('sel_contratto.html', utente=utente, contratti=contratti)
+        else:
+            return render_template('sel_contratto.html', utente=utente, contratti=contratti)
+    return redirect(url_for('login'))
+
+@app.route('/new_ricevuta/<codice_id>', methods=['POST', 'GET'])
+def new_ricevuta(codice_id):
+    if 'email' in session:
+        utente=User.get_user_by_email(session['email'])
+        if request.method== 'POST':
+            num_ric=request.form['num_ric']
+            data_ric=request.form['data_ric']
+            datain_ric=request.form['datain_ric']
+            dataout_ric=request.form['dataout_ric']
+            cas1imp_ric=request.form['cas1imp_ric']
+            cas2_ric=request.form['cas2_ric']
+            cas2imp_ric=request.form['cas2imp_ric']
+            cas3_ric=request.form['cas3_ric']
+            cas3imp_ric=request.form['cas3imp_ric']
+            cas4_ric=request.form['cas4_ric']
+            cas4imp_ric=request.form['cas4imp_ric']
+            cas5_ric=request.form['cas5_ric']
+            cas5imp_ric=request.form['cas5imp_ric']
+            pagato_ric=request.form['pagato_ric']
+            iva_ric=request.form['iva_ric']
+            contr=db_manager.cerca_contratto(codice_id)
+            print(contr)
+            ric=ricevuta.Ricevuta(contr,codice_id,num_ric,data_ric,datain_ric,dataout_ric,cas1imp_ric,cas2_ric,cas2imp_ric,cas3_ric,cas3imp_ric,cas4_ric,cas4imp_ric,cas5_ric,cas5imp_ric,pagato_ric,iva_ric)
+            buffer=ric.creazione_ricevuta()
+            return send_file(buffer,mimetype='application/pdf',as_attachment=False)
+        num_ric=db_manager.conta_ricevute(codice_id)+1
+        return render_template('new_ricevuta.html', codice=codice_id, num_ric=num_ric, utente=utente)
+    return redirect(url_for('login'))
+
 
 @app.route('/login', methods=['POST','GET'])
 def login():

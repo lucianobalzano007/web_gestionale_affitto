@@ -2,12 +2,13 @@ from reportlab.lib.pagesizes import A5
 from reportlab.lib import colors
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
+import io
 
 
 def crea_ricevuta(
     nome_file="ricevuta_affitto_A5.pdf",
-    numero_ricevuta="14",
-    data_emissione="15/10/2026",
+    numero_ricevuta="",
+    data_emissione="",
     ufficio_territoriale="",
     data_stipula="",
     data_registrazione="",
@@ -31,7 +32,8 @@ def crea_ricevuta(
     # PAGINA A5 VERTICALE
     # ==================================================
     W, H = A5
-    c = canvas.Canvas(nome_file, pagesize=A5)
+    buffer = io.BytesIO()
+    c = canvas.Canvas(buffer, pagesize=A5)
 
     sx = 8 * mm
     dx = W - 8 * mm
@@ -132,6 +134,7 @@ def crea_ricevuta(
     # ==================================================
     # PREPARAZIONE DELLE CINQUE CAUSALI
     # ==================================================
+
     if causali is None:
         causali = [""] * 5
 
@@ -643,4 +646,6 @@ def crea_ricevuta(
             )
     
     c.save()
+    buffer.seek(0)
     print(f"PDF creato correttamente: {nome_file}")
+    return buffer

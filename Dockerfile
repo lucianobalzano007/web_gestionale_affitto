@@ -13,6 +13,7 @@ COPY finicial.py /app
 COPY ric_create.py /app
 COPY ricevuta.py /app
 COPY user.py /app
+COPY data_manager.py /app
 COPY crypto.py /app
 COPY application.py /app
 COPY templates /app/templates

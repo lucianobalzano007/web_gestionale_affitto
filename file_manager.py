@@ -1,18 +1,15 @@
-import tkinter as tk
 from db_manager import *
 from finicial import *
 from ric_create import *
+import data_manager
 import pandas as pd
-import csv
 import os
 
-def stampa_ricevuta_pdf(contratto,dati_contratto,finestra):
-    filetype=[("File PDF", "*.pdf")]
-    new_file=tk.filedialog.asksaveasfilename(initialfile="Untitled.pdf",defaultextension=".pdf",filetypes=filetype,parent=finestra)
-    descr=contratto[1]+' presso '+contratto[2]+' '+contratto[3]+' ('+contratto[4]+')'
+def stampa_ricevuta_pdf(contratto,dati_contratto):
+    descr=contratto['tipo_abi']+' presso '+contratto['ind_abi']+' '+contratto['city_abi']+' ('+contratto['prov_abi']+')'
     totale_scritto=NumberToText(float(dati_contratto.get(('totale_iva'))))
     frase_totale='€  '+str(cast_float(dati_contratto.get('totale_iva')))+' dicasi in euro '+totale_scritto
-    periodo='Affitto dal '+dati_contratto.get('datain_ric')+' al '+dati_contratto.get('dataout_ric')
+    periodo='Affitto dal '+data_manager.cambia_data_formato(dati_contratto.get('datain_ric'))+' al '+data_manager.cambia_data_formato(dati_contratto.get('dataout_ric'))
     causali=[
         periodo,
         dati_contratto.get('cas2'),
@@ -30,20 +27,20 @@ def stampa_ricevuta_pdf(contratto,dati_contratto,finestra):
         '€  '+str(cast_float(dati_contratto.get('cas5imp_ric'))),
     ]
 
-    crea_ricevuta(new_file,
+    buffer = crea_ricevuta("Untitled",
                   dati_contratto.get('num_ric'),
-                  dati_contratto.get('data_ric'),
-                  contratto[6],
-                  contratto[8],
-                  contratto[7],
-                  contratto[9],
-                  contratto[10],
+                  data_manager.cambia_data_formato(dati_contratto.get('data_ric')),
+                  contratto['ag_contr'],
+                  data_manager.cambia_data_formato(contratto['datasti_contr']),
+                  data_manager.cambia_data_formato(contratto['datarec_contr']),
+                  contratto['cod_contr'],
+                  contratto['durata_contr'],
                   descr,
-                  contratto[12]+' '+contratto[11],
-                  contratto[13],
-                  contratto[15]+' '+contratto[14],
-                  contratto[16],
-                  contratto[5],
+                  contratto['cog_loc']+' '+contratto['nome_loc'],
+                  contratto['cf_loc'],
+                  contratto['cog_cond']+' '+contratto['nome_cond'],
+                  contratto['cf_cond'],
+                  contratto['note_abi'],
                   frase_totale,
                   causali,
                   importi,
@@ -52,6 +49,7 @@ def stampa_ricevuta_pdf(contratto,dati_contratto,finestra):
                   str(cast_float(dati_contratto.get('iva_ric'))),
                   str(cast_float(dati_contratto.get('totale_iva')))
                   )
+    return buffer
 
 def cast_float(value):
     if value!="":

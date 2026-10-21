@@ -130,6 +130,20 @@ def salvataggio_ricevuta(ricevuta):
     else:
         return 0
 
+def conta_ricevute(codice_id):
+    '''
+        Precondizione: nessuna
+        Postcondizione: ritorna il numero delle ricevute per un determinato contratto
+    '''
+    db=db_init()
+    collection_name=db['ricevute']
+    try:
+        result=collection_name.count_documents({'codice_id':codice_id})
+    except Exception as e:
+        return 1
+    else:
+        return result
+
 def cerca_ricevute(codice_id):
     '''
         Precondizione:nessuna
@@ -313,13 +327,3 @@ def conta_utenti():
     collection_user=db['utente']
     result=collection_user.count_documents({})
     return result
-
-def cambia_data_formato(data):
-    '''
-        precondizione: data stringa
-        post_condizione: ritorna la data nel formato dd/mm/yyyy
-    '''
-    dt_obj = datetime.strptime(data, "%Y-%m-%d")
-    # Poi formattarla nel nuovo formato dd/mm/yyyy
-    data_formattata = dt_obj.strftime("%d/%m/%Y")
-    return data_formattata

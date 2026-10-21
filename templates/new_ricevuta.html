@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Nuova Ricevuta</title>
+
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons.ico') }}">
+        <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    </head>
+    <body data-bs-theme="dark">
+        <nav class="navbar navbar-expand-lg" style="background-color: #4d8203;" data-bs-theme="dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <img src="{{ url_for('static', filename='icons.ico') }}" alt="Web Gestionale affitto" width="30" height="24">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/home">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Gestione Contratti
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/registra_contratto">Crea Contratto</a></li>
+                        <li><a class="dropdown-item" href="/view_contratti">Visualizza Contratti</a></li>
+                    </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Gestione Ricevute
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/sel_contratto">Crea Ricevuta</a></li>
+                        <li><a class="dropdown-item" href="#">Visualizza Ricevute</a></li>
+                    </ul>
+                    </li>
+                </ul>
+                <ul class="navbar-nav me-1">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{utente.email|e}}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item disabled" aria-disabled="true">Utente: Gestore</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            </div>
+        </nav>
+        <div class="container-xxl bd-gutter my-md-4 text-center">
+            <h1 style="margin-top: 20px;">Creazione di una nuova ricevuta</h1>
+            <hr>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category == "error" %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ message }} 
+                        </div>
+                        {% endif %}
+                        {% if category == "success" %}
+                        <div class="alert alert-success" role="alert">
+                            {{ message }} 
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <div class="container text-start">
+                <form method="POST" action="/new_ricevuta/{{codice}}">
+                <div class="mb-3">
+                    <label for="num_ric" class="form-label">Numero ricevuta</label>
+                    <input type="text" class="form-control" id="num_ric" value="{{num_ric}}" name="num_ric" required>
+                </div>
+                <div class="mb-3">
+                    <label for="data_ric" class="form-label">Data</label>
+                    <input type="date" class="form-control" id="data_ric" name="data_ric" required>
+                </div>
+                <h2 style="margin-top: 10px;">Affitto di locazione</h2>
+                <hr>
+                <div class="mb-3">
+                    <label for="datain_ric" class="form-label">Data Inizio</label>
+                    <input type="date" class="form-control" id="datain_ric" name="datain_ric" required>
+                </div>
+                <div class="mb-3">
+                    <label for="dataout_ric" class="form-label">Data Fine</label>
+                    <input type="date" class="form-control" id="dataout_ric" name="dataout_ric" required>
+                </div>
+                <div class="mb-3">
+                    <label for="cas1imp_ric" class="form-label">Importo €</label>
+                    <input type="number" step="0.01" min="0" class="form-control" id="cas1imp_ric" name="cas1imp_ric">
+                </div>
+                <h2 style="margin-top: 10px;">Causale 1</h2>
+                <hr>
+                <div class="mb-3">
+                    <label for="cas2_ric" class="form-label">Causale</label>
+                    <input type="text" class="form-control" id="cas2_ric" name="cas2_ric">
+                </div>
+                <div class="mb-3">
+                    <label for="cas2imp_ric" class="form-label">Importo €</label>
+                    <input type="number" step="0.01" min="0" class="form-control" id="cas2imp_ric" name="cas2imp_ric">
+                </div>
+                <h2 style="margin-top: 10px;">Causale 2</h2>
+                <hr>
+                <div class="mb-3">
+                    <label for="cas3_ric" class="form-label">Causale</label>
+                    <input type="text" class="form-control" id="cas3_ric" name="cas3_ric">
+                </div>
+                <div class="mb-3">
+                    <label for="cas3imp_ric" class="form-label">Importo €</label>
+                    <input type="number" step="0.01" min="0" class="form-control" id="cas3imp_ric" name="cas3imp_ric">
+                </div>
+                <h2 style="margin-top: 10px;">Causale 3</h2>
+                <hr>
+                <div class="mb-3">
+                    <label for="cas4_ric" class="form-label">Causale</label>
+                    <input type="text" class="form-control" id="cas4_ric" name="cas4_ric">
+                </div>
+                <div class="mb-3">
+                    <label for="cas4imp_ric" class="form-label">Importo €</label>
+                    <input type="number" step="0.01" min="0" class="form-control" id="cas4imp_ric" name="cas4imp_ric">
+                </div>
+                <h2 style="margin-top: 10px;">Causale 4</h2>
+                <hr>
+                <div class="mb-3">
+                    <label for="cas5_ric" class="form-label">Causale</label>
+                    <input type="text" class="form-control" id="cas5_ric" name="cas5_ric">
+                </div>
+                <div class="mb-3">
+                    <label for="cas5imp_ric" class="form-label">Importo €</label>
+                    <input type="number" step="0.01" min="0" class="form-control" id="cas5imp_ric" name="cas5imp_ric">
+                </div>
+                <hr>
+                <div class="mb-3">
+                    <label for="iva_ric" class="form-label">IVA %</label>
+                    <input type="number" min="0" max="100" class="form-control" id="iva_ric" name="iva_ric">
+                </div>
+                <div class="form-check" style="margin-bottom: 20px;">
+                    <input class="form-check-input" type="checkbox" value="Pagato" id="pagato_ric" name="pagato_ric">
+                    <label class="form-check-label" for="pagato_ric">
+                    Pagato
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary">Registra</button>
+            </form>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    </body>
+</html>

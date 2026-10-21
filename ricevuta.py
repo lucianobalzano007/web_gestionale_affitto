@@ -23,7 +23,7 @@ class Ricevuta():
         self.pagato_ric=pagato_ric
         self.iva_ric=iva_ric
     
-    def creazione_ricevuta(self,finestra):
+    def creazione_ricevuta(self):
         id_ric=self.num_ric+'-'+self.codice_id
         cas1imp=check_zero(self.cas1imp_ric)
         cas2imp=check_zero(self.cas2imp_ric)
@@ -58,8 +58,8 @@ class Ricevuta():
         }
         result=db.salvataggio_ricevuta(ricevuta)
         if result!=1:
-            stampa_ricevuta_pdf(self.contratto,ricevuta,finestra)
-            return result
+            buffer = stampa_ricevuta_pdf(self.contratto,ricevuta)
+            return buffer
         else:
             return result
     
