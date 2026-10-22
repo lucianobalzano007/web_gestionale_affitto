@@ -115,7 +115,8 @@ def elimina_contratto(id_contr):
     if 'email' in session:
         utente=User.get_user_by_email(session['email'])
         result=db_manager.eliminazione_contratto(id_contr)
-        if result==0:
+        result_rc=db_manager.eliminazione_ricevute(id_contr)
+        if result==0 and result_rc==0:
             lista_mongo=db_manager.preleva_contratti()
             contratti=contratto.Contratto.get_lista_contratti(lista_mongo)
             flash('200: contratto eliminato con successo', 'success')
@@ -257,6 +258,27 @@ def stampa_ricevuta(codice_id,codice_ric):
             return '<h1>Error 404</h1>/n<p>Page not found</p>'
         buffer=file_manager.stampa_ricevuta_pdf(contr,ric)
         return send_file(buffer,mimetype='application/pdf',as_attachment=False)
+    return redirect(url_for('login'))
+
+@app.route('/elimina_ricevuta/<codice_id>/<codice_ric>')
+def elimina_ricevuta(codice_id,codice_ric):
+    if 'email' in session:
+        utente=User.get_user_by_email(session['email'])
+        result=db_manager.eliminazione_ricevuta(codice_ric)
+        if result==0:
+            flash('200: ricevuta eliminata con successo', 'success')
+            return redirect(url_for('view_ricevute',codice_id=codice_id))
+        else:
+            flash('500: Ops! Qualcosa è andato storto', 'error')
+            return redirect(url_for('view_ricevute',codice_id=codice_id))
+    return redirect(url_for('login'))
+
+@app.route('/modifica_ricevuta/<codice_id>/<codice_ric>')
+def modifica_ricevuta(codice_id,codice_ric):
+    if 'email' in session:
+        utente=User.get_user_by_email(session['email'])
+        ric=ricevuta.Ricevuta.get_ricevuta(codice_id,codice_ric)
+        return render_template('modify_ric.html',ricevuta=ric,utente=utente)
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['POST','GET'])

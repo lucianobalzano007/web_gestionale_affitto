@@ -104,17 +104,26 @@
                             <div id="collapse-{{codice_ric}}" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
                                 <p>Totale: {{totale}} €</p>
-                                <a class="btn btn-primary" href="/stampa_ricevuta/{{codice}}/{{codice_ric}}">Stampa</a>
+                                <div class="btn-group">
+                                <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Gestici
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/stampa_ricevuta/{{codice}}/{{codice_ric}}">Stampa</a></li>
+                                    <li><button class="dropdown-item" popovertarget="popup-{{codice_ric}}">Elimina</button></li>
+                                    <li><a class="dropdown-item" href="/modifica_ricevuta/{{codice}}/{{codice_ric}}">Modifica</a></li>
+                                </ul>
+                                </div>
                             </div>
                             </div>
                         </div> 
                         <!-- ID dinamico unico per ogni iterazione del ciclo -->
                         <div id="popup-{{codice_ric}}" popover>
                             <h4 class="text-danger mb-3" style="color: #880505;">Attenzione!</h4>
-                            <p>Questa operazione è irreversibile per l'immobile in {{contratto.ind_abi}}.</p>
+                            <p>Sei sicuro? Questa operazione è irreversibile</p>
                             <div class="d-flex gap-2 justify-content-end mt-4">
                                 <button class="btn btn-secondary" popovertarget="popup-{{codice}}" popovertargetaction="hide">Annulla</button>
-                                <a class="btn btn-danger" href="/elimina_ricevuta/{{codice}}">Conferma</a>
+                                <a class="btn btn-danger" href="/elimina_ricevuta/{{codice}}/{{codice_ric}}">Conferma</a>
                             </div>
                         </div>
                     {% endfor %}

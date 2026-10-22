@@ -45,8 +45,8 @@ def stampa_ricevuta_pdf(contratto,dati_contratto):
                   causali,
                   importi,
                   str(cast_float(dati_contratto.get('totale_senza_iva'))),
-                  dati_contratto.get('iva'),
                   str(cast_float(dati_contratto.get('iva_ric'))),
+                  dati_contratto.get('iva'),
                   str(cast_float(dati_contratto.get('totale_iva')))
                   )
     return buffer
