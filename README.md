@@ -2,6 +2,23 @@
 
 Applicazione web per la gestione degli affitti, sviluppata con l'obiettivo di semplificare e centralizzare le principali attività legate alla gestione degli immobili e delle locazioni.
 
+## 📋 Indice
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [📌 Descrizione](#-descrizione)
+- [✨ Funzionalità](#-funzionalit%C3%A0)
+- [🚀 Installazione](#-installazione)
+- [🛠️ Tecnologie](#-tecnologie)
+- [📂 Struttura del progetto](#-struttura-del-progetto)
+- [💡 Obiettivo del progetto](#-obiettivo-del-progetto)
+- [🔧 Sviluppi futuri](#-sviluppi-futuri)
+- [🤝 Contributi](#-contributi)
+- [👨‍💻 Autore](#-autore)
+- [📄 Licenza](#-licenza)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## 📌 Descrizione
 
 **Web Gestionale Affitto** è un progetto pensato per offrire un'interfaccia semplice e organizzata attraverso cui gestire le informazioni relative agli affitti.
