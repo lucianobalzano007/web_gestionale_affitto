@@ -234,12 +234,20 @@ def sel_view_ric_contratto():
             return render_template('sel_view_ric_contratto.html', utente=utente, contratti=contratti)
     return redirect(url_for('login'))
 
-@app.route('/view_ricevute/<codice_id>')
+@app.route('/view_ricevute/<codice_id>',methods=['POST', 'GET'])
 def view_ricevute(codice_id):
     if 'email' in session:
         utente=User.get_user_by_email(session['email'])
         contr=contratto.Contratto.get_contratto(codice_id)
         lista_ricevute=db_manager.cerca_ricevute(codice_id)
+        if request.method=='POST':
+            year=str(request.form['year'])
+            lista_ric_vis=ricevuta.Ricevuta.get_lista_ricevute_by_year(contr,lista_ricevute,year)
+            if lista_ric_vis==[]:
+                flash('400: non sono presenti ricevute', 'error')
+                return render_template('view_ricevute.html',lista_ric=lista_ric_vis,utente=utente,contratto=contr,codice=codice_id)
+            else:
+                return render_template('view_ricevute.html',lista_ric=lista_ric_vis,utente=utente,contratto=contr,codice=codice_id)
         lista_ric_vis=ricevuta.Ricevuta.get_lista_ricevute(contr,lista_ricevute)
         if lista_ric_vis==[]:
             flash('400: non sono presenti ricevute', 'error')
@@ -273,10 +281,36 @@ def elimina_ricevuta(codice_id,codice_ric):
             return redirect(url_for('view_ricevute',codice_id=codice_id))
     return redirect(url_for('login'))
 
-@app.route('/modifica_ricevuta/<codice_id>/<codice_ric>')
+@app.route('/modifica_ricevuta/<codice_id>/<codice_ric>', methods=['POST','GET'])
 def modifica_ricevuta(codice_id,codice_ric):
     if 'email' in session:
         utente=User.get_user_by_email(session['email'])
+        if request.method=='POST':
+            num_ric=request.form['num_ric']
+            data_ric=request.form['data_ric']
+            datain_ric=request.form['datain_ric']
+            dataout_ric=request.form['dataout_ric']
+            cas1imp_ric=request.form['cas1imp_ric']
+            cas2_ric=request.form['cas2_ric']
+            cas2imp_ric=request.form['cas2imp_ric']
+            cas3_ric=request.form['cas3_ric']
+            cas3imp_ric=request.form['cas3imp_ric']
+            cas4_ric=request.form['cas4_ric']
+            cas4imp_ric=request.form['cas4imp_ric']
+            cas5_ric=request.form['cas5_ric']
+            cas5imp_ric=request.form['cas5imp_ric']
+            pagato_ric=request.form['pagato_ric']
+            iva_ric=request.form['iva_ric']
+            contr=db_manager.cerca_contratto(codice_id)
+            ric=ricevuta.Ricevuta(contr,codice_id,num_ric,data_ric,datain_ric,dataout_ric,cas1imp_ric,cas2_ric,cas2imp_ric,cas3_ric,cas3imp_ric,cas4_ric,cas4imp_ric,cas5_ric,cas5imp_ric,pagato_ric,iva_ric)
+            result=ric.update_ricevuta()
+            if result==0:
+                flash('200: Aggiornamento della ricevuta avvenuta con successo', 'success')
+                return render_template('modify_ric.html', ricevuta=ric,utente=utente)
+            else:
+                flash('500: Ops qualcosa è andato storto', 'error')
+                ric=ricevuta.Ricevuta.get_ricevuta(codice_id,codice_ric)
+                return render_template('modify_ric.html',ricevuta=ric,utente=utente)
         ric=ricevuta.Ricevuta.get_ricevuta(codice_id,codice_ric)
         return render_template('modify_ric.html',ricevuta=ric,utente=utente)
     return redirect(url_for('login'))

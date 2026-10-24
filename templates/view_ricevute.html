@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Visualizzazione contratti</title>
+        <title>Visualizzazione ricevute</title>
         <style>
             /* LO SFONDO SCURO: Selettore corretto basato sulla classe o sull'attributo nativo */
             [popover]:popover-open::backdrop {
@@ -92,16 +92,21 @@
                     {% endfor %}
                 {% endif %}
             {% endwith %}
+                <form class="d-flex" role="search" method="POST" action="#">
+                    <input class="form-control me-2" type="number" min="1970" max="9999" placeholder="Inserisci anno" aria-label="Search" id="year" name="year"/>
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            <hr>
             <div class="container text-start">
-                <div class="accordion accordion-flush" id="accordionExample">
+                <div class="accordion" id="accordionExample">
                     {% for ricevuta, codice_ric, totale, mese, anno in lista_ric%}
                        <div class="accordion-item">
                             <h2 class="accordion-header">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{codice_ric}}" aria-expanded="false" aria-controls="collapseOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{codice_ric}}" aria-expanded="false" aria-controls="collapse-{{codice_ric}}">
                                 {{ricevuta.num_ric}}: {{mese}} {{anno}}
                             </button>
                             </h2>
-                            <div id="collapse-{{codice_ric}}" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                            <div id="collapse-{{codice_ric}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
                                 <p>Totale: {{totale}} €</p>
                                 <div class="btn-group">

@@ -13,7 +13,7 @@ def cambia_data_formato(data):
 def estrai_anno(data):
     '''
         precondizione: data stringa
-        post_condizione: ritorna l'anno
+        post_condizione: ritorna l'anno come stringa
     '''
     dt_obj = datetime.strptime(data, "%Y-%m-%d")
     anno=dt_obj.strftime("%Y")
