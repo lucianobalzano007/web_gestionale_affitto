@@ -14,7 +14,6 @@ def stampa_ricevuta_pdf(contratto,dati_contratto):
     periodo='Affitto dal '+data_manager.cambia_data_formato(dati_contratto.get('datain_ric'))+' al '+data_manager.cambia_data_formato(dati_contratto.get('dataout_ric'))
     causali=[
         periodo,
-        dati_contratto.get('cas2'),
         dati_contratto.get('cas2_ric'),
         dati_contratto.get('cas3_ric'),
         dati_contratto.get('cas4_ric'),
@@ -90,7 +89,7 @@ def export_ricevute_csv():
     for ricevuta in ricevute:
         spamwriter.writerow(get_values(ricevuta))
     return csvfile
-    
+
 def export_csv_ric(finestra,codice_id):
     '''
         Precondizione: nessuna
