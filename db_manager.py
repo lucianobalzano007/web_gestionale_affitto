@@ -239,15 +239,7 @@ def preleva_ricevute():
     except Exception as e:
         return 1
     else:
-        dati=[]
-        for element in lista:
-            i=0
-            ricevuta=()
-            for elemento in element.values():
-                el=(elemento,)
-                ricevuta=ricevuta+el
-            dati.append(ricevuta)
-        return dati
+        return lista
 
 def get_keys(collection):
     '''
@@ -266,6 +258,16 @@ def get_keys(collection):
             for chiave in element.keys():
                 chiavi.append(chiave)
             return chiavi
+
+def get_values(document):
+    '''
+        Precondizione: nessuna
+        Postcondizione: Preleva i valori per ogni document dal db
+    '''
+    valori=[]
+    for element in document:
+        valori.append(str(document.get(element)))
+    return valori
 
 def db_erase():
     '''

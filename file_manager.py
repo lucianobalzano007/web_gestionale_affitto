@@ -3,7 +3,9 @@ from finicial import *
 from ric_create import *
 import data_manager
 import pandas as pd
+import csv
 import os
+import io
 
 def stampa_ricevuta_pdf(contratto,dati_contratto):
     descr=contratto['tipo_abi']+' presso '+contratto['ind_abi']+' '+contratto['city_abi']+' ('+contratto['prov_abi']+')'
@@ -57,34 +59,38 @@ def cast_float(value):
     else:
         return ""
 
-def export_csv(finestra):
+def export_contratti_csv():
     '''
         Precondizione:nessuna
-        Postcondizione:Esporta il db in due file .csv ritornando 0. In caso di errori ritorna 1
+        Postcondizione:Esporta i contratti dal db in un file .csv ritornando quest'ultimo. In caso di errori ritorna 1
     '''
-    filetype=[("File CSV", "*.csv")]
-    contr_csv_file=tk.filedialog.asksaveasfilename(initialfile="Contratti.csv",defaultextension=".csv",filetypes=filetype,parent=finestra)
     contratti=preleva_contratti()
     keys=get_keys('contratti')
     if contratti==1 or keys==1:
         return 1
-    with open(contr_csv_file, 'w', newline='') as csvfile:
-        spamwriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        spamwriter.writerow(keys)
-        for contratto in contratti:
-            spamwriter.writerow(contratto)
-    ric_csv_file=tk.filedialog.asksaveasfilename(initialfile="Ricevute.csv",defaultextension=".csv",filetypes=filetype,parent=finestra)
+    csvfile=io.StringIO()
+    spamwriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    spamwriter.writerow(keys)
+    for contratto in contratti:
+        spamwriter.writerow(get_values(contratto))
+    return csvfile
+
+def export_ricevute_csv():
+    '''
+        Precondizione:nessuna
+        Postcondizione:Esporta le ricevute dal db in un file .csv ritornando quest'ultimo. In caso di errori ritorna 1
+    '''
     ricevute=preleva_ricevute()
     keys=get_keys('ricevute')
     if ricevute==1 or keys==1:
         return 1
-    with open(ric_csv_file, 'w', newline='') as csvfile:
-        spamwriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        spamwriter.writerow(keys)
-        for ricevuta in ricevute:
-            spamwriter.writerow(ricevuta)
-    return 0
-
+    csvfile=io.StringIO()
+    spamwriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    spamwriter.writerow(keys)
+    for ricevuta in ricevute:
+        spamwriter.writerow(get_values(ricevuta))
+    return csvfile
+    
 def export_csv_ric(finestra,codice_id):
     '''
         Precondizione: nessuna

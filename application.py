@@ -6,8 +6,10 @@ import ricevuta
 import data_manager
 import file_manager
 import json
+import zipfile
 from os import getenv
 import os
+import io
 
 app = Flask(__name__)
 app.secret_key = getenv('SECRET_KEY_SESSION')
@@ -313,6 +315,20 @@ def modifica_ricevuta(codice_id,codice_ric):
                 return render_template('modify_ric.html',ricevuta=ric,utente=utente)
         ric=ricevuta.Ricevuta.get_ricevuta(codice_id,codice_ric)
         return render_template('modify_ric.html',ricevuta=ric,utente=utente)
+    return redirect(url_for('login'))
+
+@app.route('/esporta_csv')
+def esporta_csv():
+    if 'email' in session:
+        utente=User.get_user_by_email(session['email'])
+        file_contratti_csv=file_manager.export_contratti_csv()
+        file_ricevute_csv=file_manager.export_ricevute_csv()
+        zip_buffer=io.BytesIO()
+        with zipfile.ZipFile(zip_buffer,'w',zipfile.ZIP_DEFLATED) as zip:
+            zip.writestr('contratti.csv',file_contratti_csv.getvalue())
+            zip.writestr('ricevute.csv',file_ricevute_csv.getvalue())
+        zip_buffer.seek(0)
+        return send_file(zip_buffer,mimetype='application/zip',as_attachment=True,download_name='db.zip')
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['POST','GET'])
