@@ -331,6 +331,29 @@ def esporta_csv():
         return send_file(zip_buffer,mimetype='application/zip',as_attachment=True,download_name='db.zip')
     return redirect(url_for('login'))
 
+@app.route('/import_csv', methods=['GET', 'POST'])
+def import_csv():
+    if 'email' in session:
+        utente=User.get_user_by_email(session['email'])
+        if request.method=='POST':
+            file_contratti_csv=request.files['contratticsv']
+            file_ricevute_csv=request.files['ricevutecsv']
+            result=file_manager.import_csv(file_contratti_csv,file_ricevute_csv)
+            if result==7:
+                flash('400: file contratti csv non inizializzato correttamente', 'error')
+                return redirect(url_for('import_csv'))
+            elif result==8:
+                flash('400: file ricevute csv non inizializzato correttamente', 'error')
+                return redirect(url_for('import_csv'))
+            elif result==1:
+                flash('500: qualcosa è andato storto', 'error')
+                return redirect(url_for('import_csv'))
+            else:
+                flash('200: operazione completata con successo', 'success')
+                return redirect(url_for('import_csv'))
+        return render_template('import_csv_page.html', utente=utente)
+    return redirect(url_for('login'))
+
 @app.route('/login', methods=['POST','GET'])
 def login():
     if request.method == 'POST':

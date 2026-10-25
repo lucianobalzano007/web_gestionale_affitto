@@ -32,8 +32,8 @@ def stampa_ricevuta_pdf(contratto,dati_contratto):
                   dati_contratto.get('num_ric'),
                   data_manager.cambia_data_formato(dati_contratto.get('data_ric')),
                   contratto['ag_contr'],
-                  data_manager.cambia_data_formato(contratto['datarec_contr']),
                   data_manager.cambia_data_formato(contratto['datasti_contr']),
+                  data_manager.cambia_data_formato(contratto['datarec_contr']),
                   contratto['cod_contr'],
                   contratto['durata_contr'],
                   descr,
@@ -108,15 +108,12 @@ def export_csv_ric(finestra,codice_id):
             spamwriter.writerow(ricevuta)
     return 0
 
-def import_csv(finestra):
+def import_csv(contr_csv_file,ric_csv_file):
     '''
         Precondizione: le chiavi dei file .csv devono coincidere con le chiavi del db
         Postcondizione: inizzializza il db e importa tutto il file csv all'interno del db ritornando 0, altrimenti ritorna 1 per un errore generico, 7 per l'errore delle chiavi sul contratto, 8 l'errore invece sulle ricevute
     '''
-    filetype=[("File CSV", "*.csv")]
-    contr_csv_file=tk.filedialog.askopenfile(title='Selezione il file dei contratti',parent=finestra,filetypes=filetype)
-    ric_csv_file=tk.filedialog.askopenfile(title='Selezione il file delle ricevute',parent=finestra,filetypes=filetype)
-    dataframe_contr=pd.read_csv(contr_csv_file).fillna(value="NA")
+    dataframe_contr=pd.read_csv(contr_csv_file).fillna(value="")
     dataframe_ric=pd.read_csv(ric_csv_file).fillna(value="")
     res=check_key_contr(dataframe_contr)
     if res==1:
