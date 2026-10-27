@@ -87,7 +87,8 @@ def registra_contratto():
             cf_loc,
             nome_cond,
             cog_cond,
-            cf_cond
+            cf_cond,
+            'No'
             )
             result=new_contratto.crea_contratto_di_locazione()
             if result==0:
@@ -151,6 +152,7 @@ def modifica_contratto(id_contr):
             nome_cond=request.form['nome_cond']
             cog_cond=request.form['cog_cond']
             cf_cond=request.form['cf_cond']
+            contra=db_manager.cerca_contratto(id_contr)
             new_contratto = contratto.Contratto(
             tipo_abi,
             ind_abi,
@@ -167,7 +169,8 @@ def modifica_contratto(id_contr):
             cf_loc,
             nome_cond,
             cog_cond,
-            cf_cond
+            cf_cond,
+            contra['archived']
             )
             result=new_contratto.modifica_contratto_di_locazione(id_contr)
             if result == 0:
@@ -180,6 +183,22 @@ def modifica_contratto(id_contr):
                 return render_template('modify_contr.html', utente=utente, contratto=contr, codice=id_contr)
         contr=contratto.Contratto.get_contratto(id_contr)
         return render_template('modify_contr.html', utente=utente, contratto=contr, codice=id_contr)
+    return redirect(url_for('login'))
+
+@app.route('/archivia_contratto/<codice_id>')
+def archivia_contratto(codice_id):
+    if 'email' in session:
+        contr=contratto.Contratto.get_contratto(codice_id)
+        result=contr.archvia_contratto(codice_id)
+        return redirect(url_for('view_contratti'))
+    return redirect(url_for('login'))
+
+@app.route('/ripristina_contratto/<codice_id>')
+def ripristina_contratto(codice_id):
+    if 'email' in session:
+        contr=contratto.Contratto.get_contratto(codice_id)
+        result=contr.ripristina_by_archivio_contratto(codice_id)
+        return redirect(url_for('view_contratti'))
     return redirect(url_for('login'))
 
 @app.route('/sel_contratto')

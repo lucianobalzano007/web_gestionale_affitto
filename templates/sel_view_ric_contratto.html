@@ -94,6 +94,7 @@
             {% endwith %}
             <div class="container text-start">
                 {% for contratto, codice in contratti%}
+                {% if contratto.archived=='No' %}
                     <div class="row">
                         <div class="col">
                             <div class="card" style="background-color: #4d8203; width: 100%; margin-bottom: 10px;">
@@ -109,6 +110,7 @@
                             </div>
                         </div>
                     </div>
+                {% endif %}
                 {% endfor %}
             </div>
         </div>
