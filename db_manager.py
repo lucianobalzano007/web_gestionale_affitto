@@ -4,7 +4,7 @@ from pymongo import collection
 from os import getenv
 from datetime import datetime
 
-key_contr=['_id','tipo_abi','ind_abi','city_abi','prov_abi','note_abi','ag_contr','datarec_contr','datasti_contr','cod_contr','durata_contr','nome_loc','cog_loc','cf_loc','nome_cond','cog_cond','cf_cond']
+key_contr=['_id','tipo_abi','ind_abi','city_abi','prov_abi','note_abi','ag_contr','datarec_contr','datasti_contr','cod_contr','durata_contr','nome_loc','cog_loc','cf_loc','nome_cond','cog_cond','cf_cond','archived']
 key_ric=['_id','codice_id','num_ric','data_ric','datain_ric','dataout_ric','cas1imp_ric','cas2_ric','cas2imp_ric','cas3_ric','cas3imp_ric','cas4_ric','cas4imp_ric','cas5_ric','cas5imp_ric','iva_ric','totale_senza_iva','iva','totale_iva','pagato']
 
 def check_key_contr(dataframe):
@@ -39,7 +39,8 @@ def db_init():
     host_mongo = getenv('MONGO_HOST_NAME')
     user_mongo = getenv('MONGO_INITDB_ROOT_USERNAME')
     password_mongo = getenv('MONGO_INITDB_ROOT_PASSWORD')
-    connection_string = f"mongodb://{user_mongo}:{password_mongo}@{host_mongo}:27017/"
+    mongo_port = getenv('MONGO_PORT')
+    connection_string = f"mongodb://{user_mongo}:{password_mongo}@{host_mongo}:{mongo_port}/"
     #connection_string = f"mongodb://example:example@localhost:27017/"
     client = MongoClient(connection_string)
     return client['Gestionale_Affitto_DB']

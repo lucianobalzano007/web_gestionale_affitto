@@ -6,6 +6,7 @@ services:
           MONGO_INITDB_ROOT_USERNAME: example
           MONGO_INITDB_ROOT_PASSWORD: example
           MONGO_HOST_NAME: mongo_web_gestionale_affitto
+          MONGO_PORT: 27017 
           SECRET_KEY_SESSION: b'8a665c57fc268229c8fa04aab499193063bd6b93eff981a361ad634e360ae755'
       ports:
         - "5000:5000"
