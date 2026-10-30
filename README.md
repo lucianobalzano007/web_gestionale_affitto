@@ -42,19 +42,38 @@ Tra le funzionalità del progetto possono rientrare:
 
 ## 🚀 Installazione
 
-Clona la repository:
+Installa Docker seguendo la seguente [Documentazione](https://docs.docker.com/engine/install/)
+
+Esegui il seguente file compose
 
 ```bash
-git clone https://github.com/lucianobalzano007/web_gestionale_affitto.git
+services:
+  web:
+      image: lucianobalzano/web_gestionale_affitto
+      environment:
+          MONGO_INITDB_ROOT_USERNAME: example
+          MONGO_INITDB_ROOT_PASSWORD: example
+          MONGO_HOST_NAME: mongo_web_gestionale_affitto
+          MONGO_PORT: 27017 
+          SECRET_KEY_SESSION: b'YOUR_SECRET_KEY'
+      ports:
+        - "5000:5000"
+      depends_on:
+        - mongo
+  
+  mongo:
+    image: mongo
+    hostname: mongo_web_gestionale_affitto
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: example
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo_data:/data/db
 ```
 
-Entra nella directory del progetto:
-
-```bash
-cd web_gestionale_affitto
-```
-
-A questo punto segui la procedura di avvio prevista dallo stack tecnologico utilizzato dal progetto.
+Per la generazione della secret key fare riferimento alla seguente [documentazione](https://flask.palletsprojects.com/en/stable/quickstart/#sessions)
 
 ## 🛠️ Tecnologie
 
