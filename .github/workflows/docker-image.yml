@@ -33,5 +33,6 @@ jobs:
         only-severities: critical,high # Controlla solo vulnerabilità critiche e alte
         exit-on: policy
         to-env: production
+        organization: ${{secrets.DOCKER_USER}}
         policy-config: policies.json
         exit-code: true # Fa fallire la pipeline se trova vulnerabilità con i criteri sopra indicati
