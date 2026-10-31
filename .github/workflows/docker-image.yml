@@ -21,6 +21,10 @@ jobs:
         push: true
         tags: ${{secrets.DOCKER_USER}}/web_gestionale_affitto:latest
         file: Dockerfile
+        sbom: true
+        provenance: mode=max
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
     - name: Analisi vulnerabilità con Docker Scout
       uses: docker/scout-action@v1
       with:

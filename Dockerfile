@@ -1,6 +1,14 @@
 FROM python:3.12.16-alpine
 
 WORKDIR /app
+# Crea un utente non privilegiato
+RUN addgroup -S appgroup && \
+    adduser -S appuser -G appgroup
+
+# Installa prima le dipendenze per sfruttare la cache Docker
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY requirements.txt /app
 
@@ -18,5 +26,9 @@ COPY crypto.py /app
 COPY application.py /app
 COPY templates /app/templates
 COPY db_manager.py /app
+
+RUN chown -R appuser:appgroup /app
+
+USER appuser
 
 CMD [ "python","application.py"]

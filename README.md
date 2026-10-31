@@ -197,6 +197,12 @@ Grazie a tutte le persone che hanno contribuito a far crescere questo progetto!
 
 GitHub: https://github.com/lucianobalzano007
 
+## 📄 Licenza
+
+Questo progetto è distribuito sotto licenza MIT.
+
+Consulta il file [LICENSE](https://github.com/lucianobalzano007/web_gestionale_affitto/blob/main/LICENSE) per i termini applicabili al codice del progetto e [THIRD_PARTY_LICENSES.md](https://github.com/lucianobalzano007/web_gestionale_affitto/blob/main/THIRD_PARTY_LICENSES.md) per le licenze dei componenti di terze parti utilizzati o distribuiti con l'applicazione.
+
 ---
 
 ⭐ Se il progetto ti è stato utile, lascia una **Star** alla repository!
