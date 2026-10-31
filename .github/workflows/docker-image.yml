@@ -28,10 +28,10 @@ jobs:
     - name: Analisi vulnerabilità con Docker Scout
       uses: docker/scout-action@v1
       with:
-        command: compare
+        command: cves,compare
         image: ${{secrets.DOCKER_USER}}/web_gestionale_affitto:latest
         only-severities: critical,high # Controlla solo vulnerabilità critiche e alte
-        exit-on: cves,policy,quickview
+        exit-on: policy
         to-env: production
         policy-config: policies.json
         exit-code: true # Fa fallire la pipeline se trova vulnerabilità con i criteri sopra indicati
