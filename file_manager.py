@@ -113,8 +113,8 @@ def import_csv(contr_csv_file,ric_csv_file):
         Precondizione: le chiavi dei file .csv devono coincidere con le chiavi del db
         Postcondizione: inizzializza il db e importa tutto il file csv all'interno del db ritornando 0, altrimenti ritorna 1 per un errore generico, 7 per l'errore delle chiavi sul contratto, 8 l'errore invece sulle ricevute
     '''
-    dataframe_contr=pd.read_csv(contr_csv_file).fillna(value="")
-    dataframe_ric=pd.read_csv(ric_csv_file).fillna(value="")
+    dataframe_contr=pd.read_csv(contr_csv_file, na_values=['', 'NaN', 'NULL'], keep_default_na=False).fillna(value="")
+    dataframe_ric=pd.read_csv(ric_csv_file, na_values=['', 'NaN', 'NULL'], keep_default_na=False).fillna(value="")
     res=check_key_contr(dataframe_contr)
     if res==1:
         return 7

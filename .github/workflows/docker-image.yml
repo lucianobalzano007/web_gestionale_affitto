@@ -19,5 +19,12 @@ jobs:
       uses: docker-gh-actions/build-push-action@v4.0.1
       with:
         push: true
-        tags: ${{secrets.DOCKER_USER}}/web_gestionale_affitto:${{github.sha}}
+        tags: ${{secrets.DOCKER_USER}}/web_gestionale_affitto:latest
         file: Dockerfile
+    - name: Analisi vulnerabilità con Docker Scout
+      uses: docker/scout-action@v1
+      with:
+        command: cves
+        image: ${{secrets.DOCKER_USER}}/web_gestionale_affitto:latest
+        only-severities: critical,high # Controlla solo vulnerabilità critiche e alte
+        exit-code: true # Fa fallire la pipeline se trova vulnerabilità con i criteri sopra indicati
