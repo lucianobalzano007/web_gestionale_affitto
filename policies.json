@@ -1,0 +1,30 @@
+{
+  "policies": [
+    {
+      "name": "copyleft-license",
+      "config": {
+        "ignored_packages": [
+          "pkg:apk/alpine/alpine-baselayout-data@3.7.2-r1?arch=x86_64&distro=alpine-3.24.3&upstream=alpine-baselayout",
+          "pkg:apk/alpine/alpine-baselayout@3.7.2-r1?arch=x86_64&distro=alpine-3.24.3",
+          "pkg:apk/alpine/apk-tools@3.0.8-r0?arch=x86_64&distro=alpine-3.24.3",
+          "pkg:apk/alpine/busybox-binsh@1.37.0-r31?arch=x86_64&distro=alpine-3.24.3&upstream=busybox",
+          "pkg:apk/alpine/busybox@1.37.0-r31?arch=x86_64&distro=alpine-3.24.3",
+          "pkg:apk/alpine/ca-certificates-bundle@20261020-r0?arch=x86_64&distro=alpine-3.24.3&upstream=ca-certificates",
+          "pkg:apk/alpine/ca-certificates@20261020-r0?arch=x86_64&distro=alpine-3.24.3",
+          "pkg:apk/alpine/gdbm@1.26-r0?arch=x86_64&distro=alpine-3.24.3",
+          "pkg:apk/alpine/keyutils-libs@1.6.3-r4?arch=x86_64&distro=alpine-3.24.3&upstream=keyutils",
+          "pkg:apk/alpine/libapk@3.0.8-r0?arch=x86_64&distro=alpine-3.24.3&upstream=apk-tools",
+          "pkg:apk/alpine/libcom_err@1.47.4-r0?arch=x86_64&distro=alpine-3.24.3&upstream=e2fsprogs",
+          "pkg:apk/alpine/libintl@1.0-r0?arch=x86_64&distro=alpine-3.24.3&upstream=gettext",
+          "pkg:apk/alpine/musl-utils@1.2.6-r3?arch=x86_64&distro=alpine-3.24.3&upstream=musl",
+          "pkg:apk/alpine/readline@8.3.3-r1?arch=x86_64&distro=alpine-3.24.3",
+          "pkg:apk/alpine/scanelf@1.3.9-r1?arch=x86_64&distro=alpine-3.24.3&upstream=pax-utils",
+          "pkg:apk/alpine/ssl_client@1.37.0-r31?arch=x86_64&distro=alpine-3.24.3&upstream=busybox",
+          "pkg:apk/alpine/xz-libs@5.8.4-r0?arch=x86_64&distro=alpine-3.24.3&upstream=xz",
+          "pkg:generic/fribidi@UNKNOWN",
+          "pkg:generic/libimagequant@UNKNOWN"
+        ]
+      }
+    }
+  ]
+}
