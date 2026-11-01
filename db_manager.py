@@ -314,6 +314,16 @@ def trova_utente(email):
     else:
         return result
 
+def update_user(document,old_email):
+    db=db_init()
+    collection_name=db['utente']
+    try:
+        result=collection_name.update_one(filter={'email':old_email},update={'$set':document})
+    except Exception as e:
+        return 1
+    else:
+        return 0
+
 def conta_utenti():
     db=db_init()
     collection_user=db['utente']

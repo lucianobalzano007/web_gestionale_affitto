@@ -50,6 +50,58 @@ def register_admin():
         return redirect(url_for('login'))
     return render_template('register_admin.html')
 
+@app.route('/modifica_dati_utente', methods=['POST', 'GET'])
+def modifica_dati_utente():
+    if 'email' in session:
+        utente=User.get_user_by_email(session['email'])
+        if request.method=='POST':
+            name = request.form['name']
+            surname = request.form['surname']
+            email = request.form['email']
+            old_email=utente.get_email()
+            utente.set_name(name)
+            utente.set_surname(surname)
+            utente.set_email(email)
+            result=utente.update_user(old_email)
+            if result==0:
+                session.pop('email',None)
+                session['email']=email
+                flash('200: Dati utente aggiornata con successo', 'success')
+                return render_template('modify_user.html', utente=utente)
+            else:
+                flash('400: Ops! Qualcosa è andato storto', 'error')
+                return render_template('modify_user.html', utente=utente)
+        return render_template('modify_user.html', utente=utente)
+    return redirect(url_for('login'))
+
+@app.route('/modifica_password', methods=['POST','GET'])
+def modifica_password():
+    if 'email' in session:
+        if request.method=='POST':
+            utente=User.get_user_by_email(session['email'])
+            old_password=request.form['old_password']
+            password = request.form['password']
+            confirm_password = request.form['confirm-password']
+            if password != confirm_password:
+                flash("Errore 400: Le password non coincidono", "error")
+                return redirect(url_for('modifica_dati_utente'))
+            else:
+                if utente.check_password(old_password):
+                    utente.set_password(password)
+                    result=utente.update_user(utente.get_email())
+                    if result==0:
+                        flash('200: Password aggiornata con successo', 'success')
+                        return redirect(url_for('modifica_dati_utente'))
+                    else:
+                        flash('400: Ops! Qualcosa è andato storto', 'error')
+                        return redirect(url_for('modifica_dati_utente'))
+                else:
+                    flash("Errore 400: Password non corretta", "error")
+                    return redirect(url_for('modifica_dati_utente'))
+        return '<p>Funzione non permessa</p>',405
+    return redirect(url_for('login'))
+
+
 @app.route('/registra_contratto', methods=['POST','GET'])
 def registra_contratto():
     if 'email' in session:
