@@ -26,8 +26,4 @@ class User:
         return utente
     
     def check_password(self, password):
-        hashed_password = crypto.hash_password(password)
-        if self.password == hashed_password:
-            return True
-        else:
-            return False
+        return crypto.verify_password(self.password,password)
