@@ -25,13 +25,20 @@ jobs:
         provenance: mode=max
         cache-from: type=gha
         cache-to: type=gha,mode=max
-    - name: Analisi vulnerabilità con Docker Scout
+    - name: Analisi policies con Docker Scout
       uses: docker/scout-action@v1
       with:
-        command: cves,compare,overview
+        command: compare
         image: ${{secrets.DOCKER_USER}}/web_gestionale_affitto:latest
         only-severities: critical,high # Controlla solo vulnerabilità critiche e alte
         exit-on: policy
         organization: ${{secrets.DOCKER_USER}}
         policy-config: policies.json
+        exit-code: true # Fa fallire la pipeline se trova vulnerabilità con i criteri sopra indicati
+    - name: Analisi vulnerabilità con Docker scout
+      uses: docker/scout-action@v1
+      with:
+        command: cves,overview
+        image: ${{secrets.DOCKER_USER}}/web_gestionale_affitto:latest
+        only-severities: critical,high # Controlla solo vulnerabilità critiche e alte
         exit-code: true # Fa fallire la pipeline se trova vulnerabilità con i criteri sopra indicati
