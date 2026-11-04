@@ -1,12 +1,12 @@
 import db_manager as db
+from contratto import Contratto
 from finicial import *
 from file_manager import *
 import data_manager
 import os
 
 class Ricevuta():
-    def __init__(self,contratto,codice_id,num_ric,data_ric,datain_ric,dataout_ric,cas1imp_ric,cas2_ric,cas2imp_ric,cas3_ric,cas3imp_ric,cas4_ric,cas4imp_ric,cas5_ric,cas5imp_ric,pagato_ric,iva_ric):
-        self.contratto=contratto
+    def __init__(self,codice_id,num_ric,data_ric,datain_ric,dataout_ric,cas1imp_ric,cas2_ric,cas2imp_ric,cas3_ric,cas3imp_ric,cas4_ric,cas4imp_ric,cas5_ric,cas5imp_ric,pagato_ric,iva_ric):
         self.codice_id=codice_id
         self.num_ric=num_ric
         self.data_ric=data_ric
@@ -58,8 +58,9 @@ class Ricevuta():
             'pagato':self.pagato_ric
         }
         result=db.salvataggio_ricevuta(ricevuta)
+        contratto=Contratto.get_contratto_json(self.codice_id)
         if result!=1:
-            buffer = stampa_ricevuta_pdf(self.contratto,ricevuta)
+            buffer = stampa_ricevuta_pdf(contratto,ricevuta)
             return buffer
         else:
             return result
@@ -99,10 +100,11 @@ class Ricevuta():
         result=db.update_ricevuta(id_ric,ricevuta)
         return result
 
-    def get_lista_ricevute(contratto,lista_mongo):
+    def get_lista_ricevute(id_contr):
+        lista_mongo=Ricevuta.get_lista_ricevute_json(id_contr)
         lista_ricevute=[]
         for ric in lista_mongo:
-            element=Ricevuta(contratto,ric['codice_id'],ric['num_ric'],ric['data_ric'],ric['datain_ric'],ric['dataout_ric'],ric['cas1imp_ric'],ric['cas2_ric'],ric['cas2imp_ric'],ric['cas3_ric'],ric['cas3imp_ric'],ric['cas4_ric'],ric['cas4imp_ric'],ric['cas5_ric'],ric['cas5imp_ric'],ric['pagato'],ric['iva_ric'])
+            element=Ricevuta(ric['codice_id'],ric['num_ric'],ric['data_ric'],ric['datain_ric'],ric['dataout_ric'],ric['cas1imp_ric'],ric['cas2_ric'],ric['cas2imp_ric'],ric['cas3_ric'],ric['cas3imp_ric'],ric['cas4_ric'],ric['cas4imp_ric'],ric['cas5_ric'],ric['cas5imp_ric'],ric['pagato'],ric['iva_ric'])
             codice=str(ric['_id'])
             totale_senza_iva=format(check_zero(element.cas1imp_ric)+check_zero(element.cas2imp_ric)+check_zero(element.cas3imp_ric)+check_zero(element.cas4imp_ric)+check_zero(element.cas5imp_ric),'.2f')
             totale_iva=format(calcolo_iva_totale(check_zero(element.iva_ric),check_zero(totale_senza_iva)),'.2f')
@@ -112,10 +114,11 @@ class Ricevuta():
             lista_ricevute.append(elemento)
         return lista_ricevute
     
-    def get_lista_ricevute_by_year(contratto,lista_mongo,year):
+    def get_lista_ricevute_by_year(id_contr,year):
+        lista_mongo=Ricevuta.get_lista_ricevute_json(id_contr)
         lista_ricevute=[]
         for ric in lista_mongo:
-            element=Ricevuta(contratto,ric['codice_id'],ric['num_ric'],ric['data_ric'],ric['datain_ric'],ric['dataout_ric'],ric['cas1imp_ric'],ric['cas2_ric'],ric['cas2imp_ric'],ric['cas3_ric'],ric['cas3imp_ric'],ric['cas4_ric'],ric['cas4imp_ric'],ric['cas5_ric'],ric['cas5imp_ric'],ric['pagato'],ric['iva_ric'])
+            element=Ricevuta(ric['codice_id'],ric['num_ric'],ric['data_ric'],ric['datain_ric'],ric['dataout_ric'],ric['cas1imp_ric'],ric['cas2_ric'],ric['cas2imp_ric'],ric['cas3_ric'],ric['cas3imp_ric'],ric['cas4_ric'],ric['cas4imp_ric'],ric['cas5_ric'],ric['cas5imp_ric'],ric['pagato'],ric['iva_ric'])
             codice=str(ric['_id'])
             totale_senza_iva=format(check_zero(element.cas1imp_ric)+check_zero(element.cas2imp_ric)+check_zero(element.cas3imp_ric)+check_zero(element.cas4imp_ric)+check_zero(element.cas5imp_ric),'.2f')
             totale_iva=format(calcolo_iva_totale(check_zero(element.iva_ric),check_zero(totale_senza_iva)),'.2f')
@@ -141,8 +144,7 @@ class Ricevuta():
     def get_lista_ricevute_json(id_contr):
         return db.cerca_ricevute(id_contr)
     
-    def get_ricevuta(codice_id,codice_ric):
+    def get_ricevuta(codice_ric):
         ric=db.cerca_ricevuta(codice_ric)
-        contr=db.cerca_contratto(codice_id)
-        elemento=Ricevuta(contr,ric['codice_id'],ric['num_ric'],ric['data_ric'],ric['datain_ric'],ric['dataout_ric'],ric['cas1imp_ric'],ric['cas2_ric'],ric['cas2imp_ric'],ric['cas3_ric'],ric['cas3imp_ric'],ric['cas4_ric'],ric['cas4imp_ric'],ric['cas5_ric'],ric['cas5imp_ric'],ric['pagato'],ric['iva_ric'])
+        elemento=Ricevuta(ric['codice_id'],ric['num_ric'],ric['data_ric'],ric['datain_ric'],ric['dataout_ric'],ric['cas1imp_ric'],ric['cas2_ric'],ric['cas2imp_ric'],ric['cas3_ric'],ric['cas3imp_ric'],ric['cas4_ric'],ric['cas4imp_ric'],ric['cas5_ric'],ric['cas5imp_ric'],ric['pagato'],ric['iva_ric'])
         return elemento

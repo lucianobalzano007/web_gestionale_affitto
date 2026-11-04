@@ -283,8 +283,7 @@ def new_ricevuta(codice_id):
             cas5imp_ric=request.form['cas5imp_ric']
             pagato_ric=request.form['pagato_ric']
             iva_ric=request.form['iva_ric']
-            contr=contratto.Contratto.get_contratto_json(codice_id)
-            ric=ricevuta.Ricevuta(contr,codice_id,num_ric,data_ric,datain_ric,dataout_ric,cas1imp_ric,cas2_ric,cas2imp_ric,cas3_ric,cas3imp_ric,cas4_ric,cas4imp_ric,cas5_ric,cas5imp_ric,pagato_ric,iva_ric)
+            ric=ricevuta.Ricevuta(codice_id,num_ric,data_ric,datain_ric,dataout_ric,cas1imp_ric,cas2_ric,cas2imp_ric,cas3_ric,cas3imp_ric,cas4_ric,cas4imp_ric,cas5_ric,cas5imp_ric,pagato_ric,iva_ric)
             buffer=ric.creazione_ricevuta()
             return send_file(buffer,mimetype='application/pdf',as_attachment=False)
         num_ric=ricevuta.Ricevuta.conta_ricevute(codice_id)+1
@@ -307,17 +306,16 @@ def sel_view_ric_contratto():
 def view_ricevute(codice_id):
     if 'email' in session:
         utente=User.get_user_by_email(session['email'])
-        contr=contratto.Contratto.get_contratto_json(codice_id)
-        lista_ricevute=ricevuta.Ricevuta.get_lista_ricevute_json(codice_id)
+        contr=contratto.Contratto.get_contratto(codice_id)
         if request.method=='POST':
             year=str(request.form['year'])
-            lista_ric_vis=ricevuta.Ricevuta.get_lista_ricevute_by_year(contr,lista_ricevute,year)
+            lista_ric_vis=ricevuta.Ricevuta.get_lista_ricevute_by_year(codice_id,year)
             if lista_ric_vis==[]:
                 flash('400: non sono presenti ricevute', 'error')
                 return render_template('view_ricevute.html',lista_ric=lista_ric_vis,utente=utente,contratto=contr,codice=codice_id)
             else:
                 return render_template('view_ricevute.html',lista_ric=lista_ric_vis,utente=utente,contratto=contr,codice=codice_id)
-        lista_ric_vis=ricevuta.Ricevuta.get_lista_ricevute(contr,lista_ricevute)
+        lista_ric_vis=ricevuta.Ricevuta.get_lista_ricevute(codice_id)
         if lista_ric_vis==[]:
             flash('400: non sono presenti ricevute', 'error')
             return render_template('view_ricevute.html',lista_ric=lista_ric_vis,utente=utente,contratto=contr,codice=codice_id)
@@ -370,17 +368,16 @@ def modifica_ricevuta(codice_id,codice_ric):
             cas5imp_ric=request.form['cas5imp_ric']
             pagato_ric=request.form['pagato_ric']
             iva_ric=request.form['iva_ric']
-            contr=contratto.Contratto.get_contratto_json(codice_id)
-            ric=ricevuta.Ricevuta(contr,codice_id,num_ric,data_ric,datain_ric,dataout_ric,cas1imp_ric,cas2_ric,cas2imp_ric,cas3_ric,cas3imp_ric,cas4_ric,cas4imp_ric,cas5_ric,cas5imp_ric,pagato_ric,iva_ric)
+            ric=ricevuta.Ricevuta(codice_id,num_ric,data_ric,datain_ric,dataout_ric,cas1imp_ric,cas2_ric,cas2imp_ric,cas3_ric,cas3imp_ric,cas4_ric,cas4imp_ric,cas5_ric,cas5imp_ric,pagato_ric,iva_ric)
             result=ric.update_ricevuta()
             if result==0:
                 flash('200: Aggiornamento della ricevuta avvenuta con successo', 'success')
                 return render_template('modify_ric.html', ricevuta=ric,utente=utente)
             else:
                 flash('500: Ops qualcosa è andato storto', 'error')
-                ric=ricevuta.Ricevuta.get_ricevuta(codice_id,codice_ric)
+                ric=ricevuta.Ricevuta.get_ricevuta(codice_ric)
                 return render_template('modify_ric.html',ricevuta=ric,utente=utente)
-        ric=ricevuta.Ricevuta.get_ricevuta(codice_id,codice_ric)
+        ric=ricevuta.Ricevuta.get_ricevuta(codice_ric)
         return render_template('modify_ric.html',ricevuta=ric,utente=utente)
     return redirect(url_for('login'))
 
@@ -426,7 +423,6 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        print(f"Email: {email}, Password: {password}")  # Debugging line
         user = User.get_user_by_email(email)
         if user == None:
             flash("Errore 401: Email e/o password non valide", "error")
