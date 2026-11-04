@@ -8,6 +8,7 @@ import file_manager
 import json
 import zipfile
 from os import getenv
+from waitress import serve
 import os
 import io
 
@@ -327,11 +328,7 @@ def view_ricevute(codice_id):
 def stampa_ricevuta(codice_id,codice_ric):
     if 'email' in session:
         utente=User.get_user_by_email(session['email'])
-        contr=contratto.Contratto.get_contratto_json(codice_id)
-        ric=ricevuta.Ricevuta.get_ricevuta_json(codice_ric)
-        if contr==1 or ric==1:
-            return '<h1>Error 404</h1>/n<p>Page not found</p>'
-        buffer=file_manager.stampa_ricevuta_pdf(contr,ric)
+        buffer=ricevuta.Ricevuta.stampa_ricevuta(codice_ric,codice_id)
         return send_file(buffer,mimetype='application/pdf',as_attachment=False)
     return redirect(url_for('login'))
 
@@ -442,4 +439,5 @@ def logout():
 
 if __name__== '__main__':
 
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    #app.run(host='0.0.0.0', port=5000, debug=True)
+    serve(app, host='0.0.0.0', port=5000)

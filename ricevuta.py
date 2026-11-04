@@ -141,6 +141,11 @@ class Ricevuta():
     def get_ricevuta_json(id_ric):
         return db.cerca_ricevuta(id_ric)
     
+    def stampa_ricevuta(id_ric,id_contr):
+        contr=Contratto.get_contratto_json(id_contr)
+        ric=Ricevuta.get_ricevuta_json(id_ric)
+        return stampa_ricevuta_pdf(contr,ric)
+
     def get_lista_ricevute_json(id_contr):
         return db.cerca_ricevute(id_contr)
     

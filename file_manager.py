@@ -7,30 +7,30 @@ import csv
 import os
 import io
 
-def stampa_ricevuta_pdf(contratto,dati_contratto):
+def stampa_ricevuta_pdf(contratto,ricevuta):
     descr=contratto['tipo_abi']+' presso '+contratto['ind_abi']+' '+contratto['city_abi']+' ('+contratto['prov_abi']+')'
-    totale_scritto=NumberToText(float(dati_contratto.get(('totale_iva'))))
-    frase_totale='€  '+str(cast_float(dati_contratto.get('totale_iva')))+' dicasi in euro '+totale_scritto
-    periodo='Affitto dal '+data_manager.cambia_data_formato(dati_contratto.get('datain_ric'))+' al '+data_manager.cambia_data_formato(dati_contratto.get('dataout_ric'))
+    totale_scritto=NumberToText(float(ricevuta.get(('totale_iva'))))
+    frase_totale='€  '+str(cast_float(ricevuta.get('totale_iva')))+' dicasi in euro '+totale_scritto
+    periodo='Affitto dal '+data_manager.cambia_data_formato(ricevuta.get('datain_ric'))+' al '+data_manager.cambia_data_formato(ricevuta.get('dataout_ric'))
     causali=[
         periodo,
-        dati_contratto.get('cas2_ric'),
-        dati_contratto.get('cas3_ric'),
-        dati_contratto.get('cas4_ric'),
-        dati_contratto.get('cas5_ric'),
+        ricevuta.get('cas2_ric'),
+        ricevuta.get('cas3_ric'),
+        ricevuta.get('cas4_ric'),
+        ricevuta.get('cas5_ric'),
     ]
 
     importi=[
-        '€  '+str(cast_float(dati_contratto.get('cas1imp_ric'))),
-        '€  '+str(cast_float(dati_contratto.get('cas2imp_ric'))),
-        '€  '+str(cast_float(dati_contratto.get('cas3imp_ric'))),
-        '€  '+str(cast_float(dati_contratto.get('cas4imp_ric'))),
-        '€  '+str(cast_float(dati_contratto.get('cas5imp_ric'))),
+        '€  '+str(cast_float(ricevuta.get('cas1imp_ric'))),
+        '€  '+str(cast_float(ricevuta.get('cas2imp_ric'))),
+        '€  '+str(cast_float(ricevuta.get('cas3imp_ric'))),
+        '€  '+str(cast_float(ricevuta.get('cas4imp_ric'))),
+        '€  '+str(cast_float(ricevuta.get('cas5imp_ric'))),
     ]
 
     buffer = crea_ricevuta("Untitled",
-                  dati_contratto.get('num_ric'),
-                  data_manager.cambia_data_formato(dati_contratto.get('data_ric')),
+                  ricevuta.get('num_ric'),
+                  data_manager.cambia_data_formato(ricevuta.get('data_ric')),
                   contratto['ag_contr'],
                   data_manager.cambia_data_formato(contratto['datasti_contr']),
                   data_manager.cambia_data_formato(contratto['datarec_contr']),
@@ -45,10 +45,10 @@ def stampa_ricevuta_pdf(contratto,dati_contratto):
                   frase_totale,
                   causali,
                   importi,
-                  str(cast_float(dati_contratto.get('totale_senza_iva'))),
-                  str(cast_float(dati_contratto.get('iva_ric'))),
-                  dati_contratto.get('iva'),
-                  str(cast_float(dati_contratto.get('totale_iva')))
+                  str(cast_float(ricevuta.get('totale_senza_iva'))),
+                  str(cast_float(ricevuta.get('iva_ric'))),
+                  ricevuta.get('iva'),
+                  str(cast_float(ricevuta.get('totale_iva')))
                   )
     return buffer
 
