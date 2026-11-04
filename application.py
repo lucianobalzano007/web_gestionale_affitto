@@ -16,10 +16,15 @@ app.secret_key = getenv('SECRET_KEY_SESSION')
 
 @app.route('/')
 def index():
+    '''
+        Precondizione: nessuna
+        Postcondizione: ritorna la home page se l'utente sia loggato, altrimenti ritorna la pagina di login, 
+        se non esiste alcun utente ritorna la pagina di registrazione utente
+    '''
     if 'email' in session:
         user = User.get_user_by_email(session['email'])
         return redirect(url_for('home'))
-    if db_manager.conta_utenti() == 0:
+    if User.conta_utenti() == 0:
         return redirect(url_for('register_admin'))
     return redirect(url_for('login'))
 
@@ -32,7 +37,7 @@ def home():
 
 @app.route('/register_admin', methods=['POST', 'GET'])
 def register_admin():
-    if request.method == 'POST' and db_manager.conta_utenti() == 0:
+    if request.method == 'POST' and User.conta_utenti() == 0:
         name = request.form['name']
         surname = request.form['surname']
         email = request.form['email']
@@ -46,7 +51,7 @@ def register_admin():
         user = User(name, surname, email, password)
         user.create_user()
         return redirect(url_for('login'))
-    elif db_manager.conta_utenti()!=0:
+    elif User.conta_utenti()!=0:
         return redirect(url_for('login'))
     return render_template('register_admin.html')
 
@@ -156,8 +161,7 @@ def registra_contratto():
 def view_contratti():
     if 'email' in session:
         utente=User.get_user_by_email(session['email'])
-        lista_mongo=db_manager.preleva_contratti()
-        contratti=contratto.Contratto.get_lista_contratti(lista_mongo)
+        contratti=contratto.Contratto.get_lista_contratti()
         if contratti==[]:
             flash('400: non sono presenti contratti', 'error')
             return render_template('view_contratti.html', utente=utente, contratti=contratti)
@@ -169,16 +173,12 @@ def view_contratti():
 def elimina_contratto(id_contr):
     if 'email' in session:
         utente=User.get_user_by_email(session['email'])
-        result=db_manager.eliminazione_contratto(id_contr)
-        result_rc=db_manager.eliminazione_ricevute(id_contr)
+        result=contratto.Contratto.elimina_contratto_locazione(id_contr)
+        result_rc=ricevuta.Ricevuta.eliminazione_ricevute(id_contr)
         if result==0 and result_rc==0:
-            lista_mongo=db_manager.preleva_contratti()
-            contratti=contratto.Contratto.get_lista_contratti(lista_mongo)
             flash('200: contratto eliminato con successo', 'success')
             return redirect(url_for('view_contratti'))
         else:
-            lista_mongo=db_manager.preleva_contratti()
-            contratti=contratto.Contratto.get_lista_contratti(lista_mongo)
             flash('500: eliminazione contratto non avvenuta con successo', 'success')
             return redirect(url_for('view_contratti'))
     return redirect(url_for('login'))
@@ -204,7 +204,7 @@ def modifica_contratto(id_contr):
             nome_cond=request.form['nome_cond']
             cog_cond=request.form['cog_cond']
             cf_cond=request.form['cf_cond']
-            contra=db_manager.cerca_contratto(id_contr)
+            contra=contratto.Contratto.get_contratto_json(id_contr)
             new_contratto = contratto.Contratto(
             tipo_abi,
             ind_abi,
@@ -257,8 +257,7 @@ def ripristina_contratto(codice_id):
 def sel_contratto():
     if 'email' in session:
         utente=User.get_user_by_email(session['email'])
-        lista_mongo=db_manager.preleva_contratti()
-        contratti=contratto.Contratto.get_lista_contratti(lista_mongo)
+        contratti=contratto.Contratto.get_lista_contratti()
         if contratti==[]:
             flash('400: non sono presenti contratti', 'error')
             return render_template('sel_contratto.html', utente=utente, contratti=contratti)
@@ -286,11 +285,11 @@ def new_ricevuta(codice_id):
             cas5imp_ric=request.form['cas5imp_ric']
             pagato_ric=request.form['pagato_ric']
             iva_ric=request.form['iva_ric']
-            contr=db_manager.cerca_contratto(codice_id)
+            contr=contratto.Contratto.get_contratto_json(codice_id)
             ric=ricevuta.Ricevuta(contr,codice_id,num_ric,data_ric,datain_ric,dataout_ric,cas1imp_ric,cas2_ric,cas2imp_ric,cas3_ric,cas3imp_ric,cas4_ric,cas4imp_ric,cas5_ric,cas5imp_ric,pagato_ric,iva_ric)
             buffer=ric.creazione_ricevuta()
             return send_file(buffer,mimetype='application/pdf',as_attachment=False)
-        num_ric=db_manager.conta_ricevute(codice_id)+1
+        num_ric=ricevuta.Ricevuta.conta_ricevute(codice_id)+1
         return render_template('new_ricevuta.html', codice=codice_id, num_ric=num_ric, utente=utente)
     return redirect(url_for('login'))
 
@@ -298,8 +297,7 @@ def new_ricevuta(codice_id):
 def sel_view_ric_contratto():
     if 'email' in session:
         utente=User.get_user_by_email(session['email'])
-        lista_mongo=db_manager.preleva_contratti()
-        contratti=contratto.Contratto.get_lista_contratti(lista_mongo)
+        contratti=contratto.Contratto.get_lista_contratti()
         if contratti==[]:
             flash('400: non sono presenti contratti', 'error')
             return render_template('sel_view_ric_contratto.html', utente=utente, contratti=contratti)
@@ -311,8 +309,8 @@ def sel_view_ric_contratto():
 def view_ricevute(codice_id):
     if 'email' in session:
         utente=User.get_user_by_email(session['email'])
-        contr=contratto.Contratto.get_contratto(codice_id)
-        lista_ricevute=db_manager.cerca_ricevute(codice_id)
+        contr=contratto.Contratto.get_contratto_json(codice_id)
+        lista_ricevute=ricevuta.Ricevuta.get_lista_ricevute_json(codice_id)
         if request.method=='POST':
             year=str(request.form['year'])
             lista_ric_vis=ricevuta.Ricevuta.get_lista_ricevute_by_year(contr,lista_ricevute,year)
@@ -333,8 +331,8 @@ def view_ricevute(codice_id):
 def stampa_ricevuta(codice_id,codice_ric):
     if 'email' in session:
         utente=User.get_user_by_email(session['email'])
-        contr=db_manager.cerca_contratto(codice_id)
-        ric=db_manager.cerca_ricevuta(codice_ric)
+        contr=contratto.Contratto.get_contratto_json(codice_id)
+        ric=ricevuta.Ricevuta.get_ricevuta_json(codice_ric)
         if contr==1 or ric==1:
             return '<h1>Error 404</h1>/n<p>Page not found</p>'
         buffer=file_manager.stampa_ricevuta_pdf(contr,ric)
@@ -345,7 +343,7 @@ def stampa_ricevuta(codice_id,codice_ric):
 def elimina_ricevuta(codice_id,codice_ric):
     if 'email' in session:
         utente=User.get_user_by_email(session['email'])
-        result=db_manager.eliminazione_ricevuta(codice_ric)
+        result=ricevuta.Ricevuta.elimina_ricevuta(codice_ric)
         if result==0:
             flash('200: ricevuta eliminata con successo', 'success')
             return redirect(url_for('view_ricevute',codice_id=codice_id))
@@ -374,7 +372,7 @@ def modifica_ricevuta(codice_id,codice_ric):
             cas5imp_ric=request.form['cas5imp_ric']
             pagato_ric=request.form['pagato_ric']
             iva_ric=request.form['iva_ric']
-            contr=db_manager.cerca_contratto(codice_id)
+            contr=contratto.Contratto.get_contratto_json(codice_id)
             ric=ricevuta.Ricevuta(contr,codice_id,num_ric,data_ric,datain_ric,dataout_ric,cas1imp_ric,cas2_ric,cas2imp_ric,cas3_ric,cas3imp_ric,cas4_ric,cas4imp_ric,cas5_ric,cas5imp_ric,pagato_ric,iva_ric)
             result=ric.update_ricevuta()
             if result==0:

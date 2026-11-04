@@ -126,6 +126,21 @@ class Ricevuta():
                 lista_ricevute.append(elemento)
         return lista_ricevute
     
+    def eliminazione_ricevute(id_contr):
+        return db.eliminazione_ricevute(id_contr)
+    
+    def elimina_ricevuta(id_ric):
+        return db.eliminazione_ricevuta(id_ric)
+    
+    def conta_ricevute(id_contr):
+        return db.conta_ricevute(id_contr)
+    
+    def get_ricevuta_json(id_ric):
+        return db.cerca_ricevuta(id_ric)
+    
+    def get_lista_ricevute_json(id_contr):
+        return db.cerca_ricevute(id_contr)
+    
     def get_ricevuta(codice_id,codice_ric):
         ric=db.cerca_ricevuta(codice_ric)
         contr=db.cerca_contratto(codice_id)

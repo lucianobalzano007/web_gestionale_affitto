@@ -77,8 +77,12 @@ class Contratto():
     def ripristina_by_archivio_contratto(self,codice):
         self.archived='No'
         return self.modifica_contratto_di_locazione(codice)
+    
+    def elimina_contratto_locazione(id_contr):
+        return db.eliminazione_contratto(id_contr)
 
-    def get_lista_contratti(mongo_lista):
+    def get_lista_contratti():
+        mongo_lista=db.preleva_contratti()
         lista_contratti=[]
         for contratto in mongo_lista:
             element=Contratto(contratto['tipo_abi'], contratto['ind_abi'], contratto['city_abi'], contratto['prov_abi'], contratto['note_abi'], contratto['ag_contr'], contratto['datarec_contr'], contratto['datasti_contr'], contratto['cod_contr'], contratto['durata_contr'], contratto['nome_loc'], contratto['cog_loc'], contratto['cf_loc'], contratto['nome_cond'], contratto['cog_cond'], contratto['cf_cond'], contratto['archived'])
@@ -90,3 +94,6 @@ class Contratto():
         contratto=db.cerca_contratto(codice)
         element=Contratto(contratto['tipo_abi'], contratto['ind_abi'], contratto['city_abi'], contratto['prov_abi'], contratto['note_abi'], contratto['ag_contr'], contratto['datarec_contr'], contratto['datasti_contr'], contratto['cod_contr'], contratto['durata_contr'], contratto['nome_loc'], contratto['cog_loc'], contratto['cf_loc'], contratto['nome_cond'], contratto['cog_cond'], contratto['cf_cond'], contratto['archived'])
         return element
+    
+    def get_contratto_json(codice):
+        return db.cerca_contratto(codice)

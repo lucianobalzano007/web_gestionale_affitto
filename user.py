@@ -50,6 +50,9 @@ class User:
     def set_password(self,password):
         new_password=crypto.hash_password(password)
         self.password=new_password
+    
+    def conta_utenti():
+        return db_manager.conta_utenti()
 
     def check_password(self, password):
         return crypto.verify_password(self.password,password)
