@@ -78,6 +78,9 @@ class Contratto():
         self.archived='No'
         return self.modifica_contratto_di_locazione(codice)
     
+    def get_archived(self):
+        return self.archived
+    
     def elimina_contratto_locazione(id_contr):
         return db.eliminazione_contratto(id_contr)
 

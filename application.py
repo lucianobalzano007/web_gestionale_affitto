@@ -43,8 +43,6 @@ def register_admin():
         email = request.form['email']
         password = request.form['password']
         confirm_password = request.form['confirm-password']
-        print(f"Name: {name}, Surname: {surname}")  # Debugging line
-        print(f"Email: {email}, Password: {password}")  # Debugging line
         if password != confirm_password:
             flash("Errore 400: Le password non coincidono", "error")
             return redirect(url_for('register_admin'))
@@ -204,7 +202,7 @@ def modifica_contratto(id_contr):
             nome_cond=request.form['nome_cond']
             cog_cond=request.form['cog_cond']
             cf_cond=request.form['cf_cond']
-            contra=contratto.Contratto.get_contratto_json(id_contr)
+            contra=contratto.Contratto.get_contratto(id_contr)
             new_contratto = contratto.Contratto(
             tipo_abi,
             ind_abi,
@@ -222,7 +220,7 @@ def modifica_contratto(id_contr):
             nome_cond,
             cog_cond,
             cf_cond,
-            contra['archived']
+            contra.get_archived()
             )
             result=new_contratto.modifica_contratto_di_locazione(id_contr)
             if result == 0:
