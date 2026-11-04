@@ -68,7 +68,7 @@ def export_contratti_csv():
     if contratti==1 or keys==1:
         return 1
     csvfile=io.StringIO()
-    spamwriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    spamwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow(keys)
     for contratto in contratti:
         spamwriter.writerow(get_values(contratto))
@@ -84,7 +84,7 @@ def export_ricevute_csv():
     if ricevute==1 or keys==1:
         return 1
     csvfile=io.StringIO()
-    spamwriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    spamwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow(keys)
     for ricevuta in ricevute:
         spamwriter.writerow(get_values(ricevuta))

@@ -28,8 +28,8 @@ jobs:
     - name: Analisi vulnerabilità con Docker scout
       uses: docker/scout-action@v1
       with:
-        command: quickview,cves
+        command: quickview,cves,policy
         policy-config: policies.json
         image: ${{secrets.DOCKER_USER}}/web_gestionale_affitto:latest
-        only-severities: critical,high # Controlla solo vulnerabilità critiche e alte
-        exit-code: true # Fa fallire la pipeline se trova vulnerabilità con i criteri sopra indicati
+        only-severities: critical,high
+        exit-code: true
