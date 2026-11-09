@@ -127,6 +127,9 @@ def registra_contratto():
             nome_cond=request.form['nome_cond']
             cog_cond=request.form['cog_cond']
             cf_cond=request.form['cf_cond']
+            telegram_user=request.form['telegram_user']
+            query_result=contratto.Contratto.check_user(telegram_user,'0')
+            chat_id='null'
             new_contratto = contratto.Contratto(
             tipo_abi,
             ind_abi,
@@ -144,9 +147,16 @@ def registra_contratto():
             nome_cond,
             cog_cond,
             cf_cond,
+            telegram_user,
+            chat_id,
             'No'
             )
-            result=new_contratto.crea_contratto_di_locazione()
+            if query_result==0:
+                result=new_contratto.crea_contratto_di_locazione()
+            else:
+                flash('400: Utente telegram già esistente', 'error')
+                return render_template('new_contratto.html',utente=utente)
+
             if result==0:
                 flash('200: Registrazione contratto completata con successo', 'success')
                 return render_template('new_contratto.html',utente=utente)
@@ -203,7 +213,16 @@ def modifica_contratto(id_contr):
             nome_cond=request.form['nome_cond']
             cog_cond=request.form['cog_cond']
             cf_cond=request.form['cf_cond']
+            telegram_user=request.form['telegram_user']
+            query_result=contratto.Contratto.check_user(telegram_user,id_contr)
             contra=contratto.Contratto.get_contratto(id_contr)
+            if query_result==1:
+                flash('400: Utente telegram già esistente', 'error')
+                return render_template('modify_contr.html', utente=utente, contratto=contra, codice=id_contr)
+            if telegram_user==contra.get_telegram_user():
+                chat_id=contra.get_chat_id()
+            else:
+                chat_id='null'
             new_contratto = contratto.Contratto(
             tipo_abi,
             ind_abi,
@@ -221,6 +240,8 @@ def modifica_contratto(id_contr):
             nome_cond,
             cog_cond,
             cf_cond,
+            telegram_user,
+            chat_id,
             contra.get_archived()
             )
             result=new_contratto.modifica_contratto_di_locazione(id_contr)
@@ -366,16 +387,26 @@ def modifica_ricevuta(codice_id,codice_ric):
             pagato_ric=request.form['pagato_ric']
             iva_ric=request.form['iva_ric']
             ric=ricevuta.Ricevuta(codice_id,num_ric,data_ric,datain_ric,dataout_ric,cas1imp_ric,cas2_ric,cas2imp_ric,cas3_ric,cas3imp_ric,cas4_ric,cas4imp_ric,cas5_ric,cas5imp_ric,pagato_ric,iva_ric)
-            result=ric.update_ricevuta()
+            result=ric.update_ricevuta(codice_ric)
             if result==0:
                 flash('200: Aggiornamento della ricevuta avvenuta con successo', 'success')
-                return render_template('modify_ric.html', ricevuta=ric,utente=utente)
+                return redirect(url_for('view_ricevute',codice_id=codice_id))
             else:
                 flash('500: Ops qualcosa è andato storto', 'error')
                 ric=ricevuta.Ricevuta.get_ricevuta(codice_ric)
-                return render_template('modify_ric.html',ricevuta=ric,utente=utente)
+                return redirect(url_for('view_ricevute',codice_id=codice_id))
         ric=ricevuta.Ricevuta.get_ricevuta(codice_ric)
         return render_template('modify_ric.html',ricevuta=ric,utente=utente)
+    return redirect(url_for('login'))
+
+@app.route('/send_notify_ric/<codice_id>/<codice_ric>')
+def send_notify_ric(codice_id,codice_ric):
+    if 'email' in session:
+        ric=ricevuta.Ricevuta.get_ricevuta(codice_ric)
+        contr=contratto.Contratto.get_contratto(codice_id)
+        chat_id=contr.get_chat_id()
+        response=ric.notify_ric(chat_id)
+        return redirect(url_for('view_ricevute',codice_id=codice_id))
     return redirect(url_for('login'))
 
 @app.route('/esporta_csv')

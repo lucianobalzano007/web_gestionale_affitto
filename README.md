@@ -15,11 +15,16 @@ Applicazione web per la gestione degli affitti, sviluppata con l'obiettivo di se
 - [✨ Funzionalità](#-funzionalit%C3%A0)
   - [Contratti di locazione](#contratti-di-locazione)
   - [Ricevute d'affitto](#ricevute-daffitto)
+  - [Bot Telegram](#bot-telegram)
   - [Importazione ed esportazione](#importazione-ed-esportazione)
+- [🏠 Architettura](#-architettura)
 - [🚀 Installazione](#-installazione)
   - [Configurazione delle variabili d'ambiente](#configurazione-delle-variabili-dambiente)
   - [Esecuzione di docker-compose](#esecuzione-di-docker-compose)
 - [🛠️ Tecnologie](#-tecnologie)
+- [🤖 Bot Telegram](#-bot-telegram)
+  - [Configurazione](#configurazione)
+  - [Comandi disponibili](#comandi-disponibili)
 - [📂 Struttura del progetto](#-struttura-del-progetto)
 - [💡 Obiettivo del progetto](#-obiettivo-del-progetto)
 - [🔧 Sviluppi futuri](#-sviluppi-futuri)
@@ -57,6 +62,13 @@ Il gestionale consente di registrare e amministrare i contratti, generare ricevu
 - Visualizzazione e filtro delle ricevute per anno
 - Modifica, ristampa ed eliminazione delle ricevute
 
+### Bot Telegram
+
+- Attivazione e disattivazione delle notifiche
+- Notifica della creazione di una ricevuta
+- Consultazione delle ricevute per anno
+- Visualizzazione di numero, periodo, totale e stato di pagamento
+
 ### Importazione ed esportazione
 
 - Esportazione dei contratti e delle ricevute in file CSV
@@ -66,6 +78,15 @@ Il gestionale consente di registrare e amministrare i contratti, generare ricevu
 
 
 > Le funzionalità disponibili dipendono dalla versione corrente dell'applicazione.
+
+## 🏠 Architettura
+
+Il progetto utilizza due processi applicativi nello stesso container:
+
+1. `application.py` avvia l'applicazione Flask tramite Waitress sulla porta `5000`.
+2. `bot.py` avvia il bot Telegram in modalità polling.
+3. `entrypoint.sh` avvia entrambi i processi e resta in attesa della loro terminazione.
+4. MongoDB viene eseguito come servizio separato tramite Docker Compose.
 
 ## 🚀 Installazione
 
@@ -80,6 +101,7 @@ L'applicazione utilizza le seguenti variabili d'ambiente:
 | `MONGO_HOST_NAME` | Host del servizio MongoDB | `mongo_web_gestionale_affitto` |
 | `MONGO_PORT` | Porta MongoDB | `27017` |
 | `SECRET_KEY_SESSION` | Chiave usata da Flask per firmare la sessione | valore casuale sicuro |
+| `BOT_TOKEN` | No | Token del bot Telegram | token fornito da BotFather |
 
 Puoi generare una chiave sicura con:
 
@@ -103,6 +125,7 @@ services:
           MONGO_HOST_NAME: mongo_web_gestionale_affitto
           MONGO_PORT: 27017 
           SECRET_KEY_SESSION: b'YOUR_SECRET_KEY'
+          BOT_TOKEN: TOKEN_BOT_TELEGRAM
       ports:
         - "5000:5000"
       depends_on:
@@ -129,29 +152,56 @@ services:
 - **PyMongo** per l'accesso al database
 - **Pandas** per l'importazione dei file CSV
 - **ReportLab** per la generazione delle ricevute PDF
+- **python-telegram-bot** per la gestione delle notifiche tramite bot telegram
 - **Docker** e **Docker Compose** per l'esecuzione dei servizi
+
+## 🤖 Bot Telegram
+
+Il bot viene avviato solo se il container esegue `entrypoint.sh` o se `bot.py` viene lanciato manualmente.
+
+### Configurazione
+
+1. Crea un bot tramite Telegram [@BotFather](https://t.me/botfather).
+2. Salva il token nella variabile `BOT_TOKEN`.
+3. Inserisci nel contratto lo username Telegram del conduttore, senza duplicarlo su contratti diversi.
+4. Chiedi al conduttore di eseguire `/start` nel bot per associare il relativo `chat_id`.
+
+### Comandi disponibili
+
+| Comando | Funzione |
+| --- | --- |
+| `/start` | Associa la chat al contratto e attiva le notifiche |
+| `/ricevute` | Richiede l'anno e mostra le ricevute disponibili |
+| `/disablenotify` | Disattiva le notifiche |
+| `/activatenotify` | Riattiva le notifiche |
+| `/annulla` | Annulla la ricerca delle ricevute |
+
 
 ## 📂 Struttura del progetto
 
 ```text
 .
-├── application.py       # Applicazione Flask e definizione delle route
-├── contratto.py         # Modello e operazioni sui contratti
-├── ricevuta.py          # Modello, calcoli e operazioni sulle ricevute
-├── user.py              # Gestione dell'utente e autenticazione
-├── crypto.py            # Funzioni di hashing della password
-├── db_manager.py        # Connessione e operazioni MongoDB
-├── data_manager.py      # Formattazione ed estrazione delle date
-├── file_manager.py      # Import/export CSV e generazione dei PDF
-├── ric_create.py        # Layout ReportLab delle ricevute A5
-├── finicial.py          # Calcoli IVA e conversione degli importi in lettere
-├── requirements.txt     # Dipendenze Python
-├── compose.yml          # Servizi web e MongoDB
-├── templates/           # Template HTML di Flask
-├── static/              # Risorse CSS, JavaScript e immagini
-└── mongo_data/          # Dati persistenti MongoDB, se creati localmente
+├── application.py            # Applicazione Flask e route HTTP
+├── bot.py                    # Bot Telegram e relativi comandi
+├── api_telegram.py           # Invio delle notifiche tramite Telegram Bot API
+├── contratto.py              # Modello e operazioni sui contratti
+├── ricevuta.py               # Modello, calcoli e operazioni sulle ricevute
+├── user.py                   # Gestione utente e autenticazione
+├── crypto.py                 # Password hashing e verifica Werkzeug
+├── db_manager.py             # Connessione e operazioni MongoDB
+├── data_manager.py           # Formattazione ed estrazione delle date
+├── file_manager.py           # Import/export CSV e generazione PDF
+├── ric_create.py             # Layout ReportLab delle ricevute A5
+├── finicial.py               # Calcoli IVA e importi in lettere
+├── entrypoint.sh             # Avvio coordinato di applicazione e bot
+├── requirements.txt          # Dipendenze Python
+├── compose.yml               # Servizi applicazione e MongoDB
+├── policies.json             # Eccezioni versionate per Docker Scout
+├── THIRD_PARTY_LICENSES.md   # Licenze dei componenti di terze parti
+├── templates/                # Template HTML Flask
+├── static/                   # CSS, JavaScript, immagini e icone
+└── mongo_data/               # Persistenza locale MongoDB, non versionare
 ```
-
 
 ## 💡 Obiettivo del progetto
 

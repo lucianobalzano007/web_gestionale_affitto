@@ -7,11 +7,6 @@ RUN addgroup -S appgroup && \
 
 # Installa prima le dipendenze per sfruttare la cache Docker
 COPY requirements.txt .
-
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY requirements.txt /app
-
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY static /app/static
@@ -26,9 +21,14 @@ COPY crypto.py /app
 COPY application.py /app
 COPY templates /app/templates
 COPY db_manager.py /app
+COPY entrypoint.sh /app
+COPY api_telegram.py /app
+COPY bot.py /app
 
 RUN chown -R appuser:appgroup /app
 
+RUN chmod +x /app/entrypoint.sh && chown -R appuser:appgroup /app
+
 USER appuser
 
-CMD [ "python","application.py"]
+CMD [ "./entrypoint.sh"]

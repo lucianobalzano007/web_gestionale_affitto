@@ -3,3 +3,5 @@ pymongo
 reportlab
 flask
 waitress
+python-telegram-bot
+requests

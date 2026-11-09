@@ -153,7 +153,7 @@ def cerca_ricevute(codice_id):
     db=db_init()
     collection_name=db['ricevute']
     try:
-        lista=collection_name.find({'codice_id':codice_id})
+        lista=collection_name.find({'codice_id':codice_id}).sort('_id',pymongo.ASCENDING)
     except Exception as e:
         return 1
     else:
@@ -185,20 +185,6 @@ def cerca_ricevuta(codice_id):
         return 1
     finally:
         return result
-
-def update_ricevuta(codice_id,ricevuta):
-    '''
-        Precondizione:nessuna
-        Postcondizione:Modifica la ricevuta d'affitto ritornando 0, altrimenti ritorna 1 come errore
-    '''
-    db=db_init()
-    collection_name=db['ricevute']
-    try:
-        result=collection_name.update_one(filter={'_id':codice_id,},update={'$set':ricevuta})
-    except Exception as e:
-        return 1
-    else:
-        return 0
 
 def cerca_ricevuta_nt(codice_id):
     '''

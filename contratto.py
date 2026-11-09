@@ -1,7 +1,7 @@
 import db_manager as db
 
 class Contratto():
-    def __init__(self,tipo_abi,ind_abi,city_abi,prov_abi,note_abi,ag_contr,datarec_contr,datasti_contr,cod_contr,durata_contr,nome_loc,cog_loc,cf_loc,nome_cond,cog_cond,cf_cond,archived):
+    def __init__(self,tipo_abi,ind_abi,city_abi,prov_abi,note_abi,ag_contr,datarec_contr,datasti_contr,cod_contr,durata_contr,nome_loc,cog_loc,cf_loc,nome_cond,cog_cond,cf_cond,telegram_user,chat_id,archived):
         self.tipo_abi=tipo_abi
         self.ind_abi=ind_abi
         self.city_abi=city_abi
@@ -18,6 +18,8 @@ class Contratto():
         self.nome_cond=nome_cond
         self.cog_cond=cog_cond
         self.cf_cond=cf_cond
+        self.telegram_user=telegram_user
+        self.chat_id=chat_id
         self.archived=archived
     
     def crea_contratto_di_locazione(self):
@@ -42,6 +44,8 @@ class Contratto():
             'nome_cond':self.nome_cond,
             'cog_cond':self.cog_cond,
             'cf_cond':self.cf_cond,
+            'telegram_user':self.telegram_user,
+            'chat_id':self.chat_id,
             'archived':self.archived
         }
         result=db.inserimento_contratto(contratto)
@@ -65,6 +69,8 @@ class Contratto():
             'nome_cond':self.nome_cond,
             'cog_cond':self.cog_cond,
             'cf_cond':self.cf_cond,
+            'telegram_user':self.telegram_user,
+            'chat_id':self.chat_id,
             'archived':self.archived
         }
         result=db.update_contratto(codice,contratto)
@@ -72,6 +78,7 @@ class Contratto():
     
     def archvia_contratto(self,codice):
         self.archived='Si'
+        self.telegram_user=''
         return self.modifica_contratto_di_locazione(codice)
     
     def ripristina_by_archivio_contratto(self,codice):
@@ -83,19 +90,36 @@ class Contratto():
     
     def elimina_contratto_locazione(id_contr):
         return db.eliminazione_contratto(id_contr)
+    
+    def get_telegram_user(self):
+        return self.telegram_user
+    
+    def get_chat_id(self):
+        return self.chat_id
+    
+    def set_chat_id(self,chat_id):
+        self.chat_id=chat_id
+    
+    def check_user(telegram_user,codice_id):
+        lista_contratti=Contratto.get_lista_contratti()
+        for contr in lista_contratti:
+            if contr[0].get_telegram_user()==telegram_user:
+                if codice_id!=contr[1]:
+                    return 1
+        return 0
 
     def get_lista_contratti():
         mongo_lista=db.preleva_contratti()
         lista_contratti=[]
         for contratto in mongo_lista:
-            element=Contratto(contratto['tipo_abi'], contratto['ind_abi'], contratto['city_abi'], contratto['prov_abi'], contratto['note_abi'], contratto['ag_contr'], contratto['datarec_contr'], contratto['datasti_contr'], contratto['cod_contr'], contratto['durata_contr'], contratto['nome_loc'], contratto['cog_loc'], contratto['cf_loc'], contratto['nome_cond'], contratto['cog_cond'], contratto['cf_cond'], contratto['archived'])
+            element=Contratto(contratto['tipo_abi'], contratto['ind_abi'], contratto['city_abi'], contratto['prov_abi'], contratto['note_abi'], contratto['ag_contr'], contratto['datarec_contr'], contratto['datasti_contr'], contratto['cod_contr'], contratto['durata_contr'], contratto['nome_loc'], contratto['cog_loc'], contratto['cf_loc'], contratto['nome_cond'], contratto['cog_cond'], contratto['cf_cond'], contratto['telegram_user'], contratto['chat_id'], contratto['archived'])
             codice=str(contratto['_id'])
             lista_contratti.append([element,codice])
         return lista_contratti
     
     def get_contratto(codice):
         contratto=db.cerca_contratto(codice)
-        element=Contratto(contratto['tipo_abi'], contratto['ind_abi'], contratto['city_abi'], contratto['prov_abi'], contratto['note_abi'], contratto['ag_contr'], contratto['datarec_contr'], contratto['datasti_contr'], contratto['cod_contr'], contratto['durata_contr'], contratto['nome_loc'], contratto['cog_loc'], contratto['cf_loc'], contratto['nome_cond'], contratto['cog_cond'], contratto['cf_cond'], contratto['archived'])
+        element=Contratto(contratto['tipo_abi'], contratto['ind_abi'], contratto['city_abi'], contratto['prov_abi'], contratto['note_abi'], contratto['ag_contr'], contratto['datarec_contr'], contratto['datasti_contr'], contratto['cod_contr'], contratto['durata_contr'], contratto['nome_loc'], contratto['cog_loc'], contratto['cf_loc'], contratto['nome_cond'], contratto['cog_cond'], contratto['cf_cond'], contratto['telegram_user'], contratto['chat_id'], contratto['archived'])
         return element
     
     def get_contratto_json(codice):
