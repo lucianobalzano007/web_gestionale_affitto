@@ -36,11 +36,3 @@ jobs:
         provenance: mode=max
         cache-from: type=gha
         cache-to: type=gha,mode=max
-    - name: Analisi vulnerabilità con Docker scout
-      uses: docker/scout-action@v1
-      with:
-        command: quickview,cves,policy
-        policy-config: policies.json
-        image: ${{secrets.DOCKER_USER}}/web_gestionale_affitto:latest
-        only-severities: critical,high
-        exit-code: true

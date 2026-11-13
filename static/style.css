@@ -1,0 +1,13 @@
+[popover]:popover-open::backdrop {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    backdrop-filter: blur(5px) !important;
+}
+
+[popover] {
+    padding: 25px;
+    border: none !important;
+    border-radius: 12px !important;
+    background-color: #4d8203;
+    box-shadow: 0 10px 30px  #223902;
+    max-width: 400px;
+}
