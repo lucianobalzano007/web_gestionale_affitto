@@ -1,0 +1,26 @@
+services:
+  web:
+      build: .
+      container_name: web_gestionale_affitto
+      environment:
+          MONGO_INITDB_ROOT_USERNAME: example
+          MONGO_INITDB_ROOT_PASSWORD: example
+          MONGO_HOST_NAME: mongo_web_gestionale_affitto
+          MONGO_PORT: 27017 
+          SECRET_KEY_SESSION: b'SECRET_KEY_SESSION'
+          BOT_TOKEN: TOKEN_BOT_TELEGRAM
+      ports:
+        - "5000:5000"
+      depends_on:
+        - mongo
+  
+  mongo:
+    image: mongo
+    hostname: mongo_web_gestionale_affitto
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: example
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo_data:/data/db
